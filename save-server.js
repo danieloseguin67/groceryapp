@@ -27,6 +27,23 @@ app.post('/api/save', (req, res) => {
   }
 });
 
+// Save summary endpoint
+app.post('/api/save-summary', (req, res) => {
+  try {
+    const data = req.body;
+    const filePath = path.join(__dirname, 'src', 'assets', 'grocery-summaries.json');
+    
+    // Write to file
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    
+    console.log('✅ Summary saved successfully to grocery-summaries.json');
+    res.json({ success: true, message: 'Summary saved successfully!' });
+  } catch (error) {
+    console.error('❌ Error saving summary:', error);
+    res.status(500).json({ success: false, message: 'Failed to save summary', error: error.message });
+  }
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Save server is running' });

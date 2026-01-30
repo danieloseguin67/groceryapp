@@ -11,6 +11,13 @@ interface GroceryItem {
   'Picked Up': boolean;
 }
 
+interface GrocerySummary {
+  date: string;
+  estimatedCost: number;
+  actualCost: number;
+  store: string;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -24,6 +31,40 @@ export class AppComponent implements OnInit {
   displayedData: GroceryItem[] = [];
   searchTerm: string = '';
   showOnlyUnpicked: boolean = false;
+  
+  // Summary Report Modal
+  showSummaryModal: boolean = false;
+  summaryDate: string = '';
+  summaryActualCost: number = 0;
+  summaryStore: string = 'Super C';
+  grocerySummaries: GrocerySummary[] = [];
+  
+  // Store options
+  stores: string[] = [
+    'Super C',
+    'Metro',
+    'IGA',
+    'Maxi',
+    'Provigo',
+    'Loblaws'
+  ];
+  
+  // Summary Report Modal
+  showSummaryModal: boolean = false;
+  summaryDate: string = '';
+  summaryActualCost: number = 0;
+  summaryStore: string = 'Super C';
+  grocerySummaries: GrocerySummary[] = [];
+  
+  // Store options
+  stores: string[] = [
+    'Super C',
+    'Metro',
+    'IGA',
+    'Maxi',
+    'Provigo',
+    'Loblaws'
+  ];
   
   // Expose Math to template
   Math = Math;
@@ -46,13 +87,15 @@ export class AppComponent implements OnInit {
   itemsPerPage: number = 10;
   totalPages: number = 1;
   
-  // Local JSON file path
+  // Local JSON file paths
   private localJsonPath = 'assets/grocery-data.json';
+  private summariesJsonPath = 'assets/grocery-summaries.json';
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
     this.loadJsonData();
+    this.loadSummaries();
   }
 
   loadJsonData(): void {
@@ -66,6 +109,42 @@ export class AppComponent implements OnInit {
         error: (error) => {
           console.error('❌ Error loading JSON file:', error);
           alert('JSON file not found in assets folder.\n\nPlease ensure grocery-data.json exists in src/assets/ folder');
+        }
+      });
+  }
+
+  loadSummaries(): void {
+    this.http.get<GrocerySummary[]>(this.summariesJsonPath)
+      .subscribe({
+        next: (summaries) => {
+          this.grocerySummaries = summaries;
+          console.log('✅ Successfully loaded summaries');
+        },
+        error: (error) => {
+          console.log('ℹ️ No existing summaries found (this is normal for first time)');
+          this.grocerySummaries = [];
+        }
+      });
+  }
+          this.processJsonData(jsonData);
+        },
+        error: (error) => {
+          console.error('❌ Error loading JSON file:', error);
+          alert('JSON file not found in assets folder.\n\nPlease ensure grocery-data.json exists in src/assets/ folder');
+        }
+      });
+  }
+
+  loadSummaries(): void {
+    this.http.get<GrocerySummary[]>(this.summariesJsonPath)
+      .subscribe({
+        next: (summaries) => {
+          this.grocerySummaries = summaries;
+          console.log('✅ Successfully loaded summaries');
+        },
+        error: (error) => {
+          console.log('ℹ️ No existing summaries found (this is normal for first time)');
+          this.grocerySummaries = [];
         }
       });
   }
@@ -155,6 +234,97 @@ export class AppComponent implements OnInit {
 
   togglePickedUp(item: GroceryItem): void {
     item['Picked Up'] = !item['Picked Up'];
+  }
+
+  deleteRow(item: GroceryItem): void {
+    if (confirm('Are you sure you want to delete this item?')) {
+      const index = this.groceryData.indexOf(item);
+      if (index > -1) {
+        this.groceryData.splice(index, 1);
+        this.filteredData = [...this.groceryData];
+        this.updatePagination();
+      }
+    }
+  }
+
+  openSummaryReport(): void {
+    this.showSummaryModal = true;
+    // Set default date to today
+    const today = new Date();
+    this.summaryDate = today.toISOString().split('T')[0];
+    this.summaryActualCost = 0;
+    this.summaryStore = 'Super C';
+  }
+
+  closeSummaryModal(): void {
+    this.showSummaryModal = false;
+  }
+
+  getEstimatedCost(): number {
+    return this.groceryData.reduce((total, item) => {
+      return total + (item['Price (CAD)'] * item.Quantity);
+    }, 0);
+  }
+
+  saveSummary(): void {
+    const summary: GrocerySummary = {
+      date: this.summaryDate,
+      estimatedCost: this.getEstimatedCost(),
+      actualCost: this.summaryActualCost,
+      store: this.summaryStore
+    };
+
+    this.grocerySummaries.push(summary);
+    
+    // Save to backend
+    this.http.post('http://localhost:3000/api/save-summary', this.grocerySummaries)
+      .subscribe({
+        next: (response: any) => {
+          console.log('✅ Summary saved successfully');
+          alert(`Summary saved!\n\nDate: ${summary.date}\nStore: ${summary.store}\nEstimated: $${summary.estimatedCost.toFixed(2)}\nActual: $${summary.actualCost.toFixed(2)}\nDifference: $${(summary.actualCost - summary.estimatedCost).toFixed(2)}`);
+          this.closeSummaryModal();
+        },
+        error: (error) => {
+          console.error('❌ Error saving summary:', error);
+          alert('Failed to save summary. Make sure the save server is running.\n\nRun: npm run server (in a separate terminal)');
+        }
+      });
+  }
+
+  openSummaryReport(): void {
+    this.showSummaryModal = true;
+    // Set default date to today
+    const today = new Date();
+    this.summaryDate = today.toISOString().split('T')[0];
+    this.summaryActualCost = 0;
+    this.summaryStore = 'Super C';
+  }
+
+  closeSummaryModal(): void {
+    this.showSummaryModal = false;
+  }
+
+  getEstimatedCost(): number {
+    return this.groceryData.reduce((total, item) => {
+      return total + (item['Price (CAD)'] * item.Quantity);
+    }, 0);
+  }
+
+  saveSummary(): void {
+    const summary: GrocerySummary = {
+      date: this.summaryDate,
+      estimatedCost: this.getEstimatedCost(),
+      actualCost: this.summaryActualCost,
+      store: this.summaryStore
+    };
+
+    this.grocerySummaries.push(summary);
+    
+    // Save to backend (optional - for now just logging)
+    console.log('Grocery Summary Saved:', summary);
+    alert(`Summary saved!\n\nDate: ${summary.date}\nStore: ${summary.store}\nEstimated: $${summary.estimatedCost.toFixed(2)}\nActual: $${summary.actualCost.toFixed(2)}\nDifference: $${(summary.actualCost - summary.estimatedCost).toFixed(2)}`);
+    
+    this.closeSummaryModal();
   }
 
   saveToExcel(): void {
