@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
   filteredData: GroceryItem[] = [];
   displayedData: GroceryItem[] = [];
   searchTerm: string = '';
+  showOnlyUnpicked: boolean = false;
   
   // Expose Math to template
   Math = Math;
@@ -78,11 +79,12 @@ export class AppComponent implements OnInit {
   }
 
   onSearch(): void {
-    if (!this.searchTerm.trim()) {
-      this.filteredData = [...this.groceryData];
-    } else {
+    let results = [...this.groceryData];
+    
+    // Apply text search
+    if (this.searchTerm.trim()) {
       const searchLower = this.searchTerm.toLowerCase();
-      this.filteredData = this.groceryData.filter(item => {
+      results = results.filter(item => {
         return (
           item.Category?.toLowerCase().includes(searchLower) ||
           item['Product Name']?.toLowerCase().includes(searchLower) ||
@@ -93,6 +95,13 @@ export class AppComponent implements OnInit {
         );
       });
     }
+    
+    // Apply unpicked filter
+    if (this.showOnlyUnpicked) {
+      results = results.filter(item => !item['Picked Up']);
+    }
+    
+    this.filteredData = results;
     this.currentPage = 1;
     this.updatePagination();
   }
@@ -144,15 +153,8 @@ export class AppComponent implements OnInit {
     this.updatePagination();
   }
 
-  deleteRow(item: GroceryItem): void {
-    if (confirm('Are you sure you want to delete this item?')) {
-      const index = this.groceryData.indexOf(item);
-      if (index > -1) {
-        this.groceryData.splice(index, 1);
-        this.filteredData = [...this.groceryData];
-        this.updatePagination();
-      }
-    }
+  togglePickedUp(item: GroceryItem): void {
+    item['Picked Up'] = !item['Picked Up'];
   }
 
   saveToExcel(): void {

@@ -25,6 +25,16 @@
       />
       <span class="search-icon">🔍</span>
     </div>
+    <div class="filter-controls">
+      <label class="filter-checkbox">
+        <input 
+          type="checkbox" 
+          [(ngModel)]="showOnlyUnpicked"
+          (change)="onSearch()"
+        />
+        <span>Show only unpicked items</span>
+      </label>
+    </div>
     <div class="info">
       <span class="total-count">
         Total: {{ filteredData.length }} items
@@ -47,10 +57,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of displayedData; let i = index">
+        <tr *ngFor="let item of displayedData; let i = index" [class.picked-up-row]="item['Picked Up']">
           <td class="actions-col">
-            <button class="btn-delete" (click)="deleteRow(item)" title="Delete">
-              🗑️
+            <button 
+              class="btn-toggle" 
+              [class.picked]="item['Picked Up']"
+              (click)="togglePickedUp(item)" 
+              [title]="item['Picked Up'] ? 'Mark as Not Picked' : 'Mark as Picked'">
+              {{ item['Picked Up'] ? '✓' : '○' }}
             </button>
           </td>
           <td>

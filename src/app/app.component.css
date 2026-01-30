@@ -126,6 +126,31 @@
   color: #9ca3af;
 }
 
+.filter-controls {
+  margin-bottom: 15px;
+}
+
+.filter-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.filter-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #667eea;
+}
+
+.filter-checkbox:hover {
+  color: #667eea;
+}
+
 .info {
   display: flex;
   justify-content: space-between;
@@ -193,6 +218,16 @@
   background-color: #ede9fe;
 }
 
+.data-table tbody tr.picked-up-row {
+  background-color: #d1fae5;
+  opacity: 0.8;
+}
+
+.data-table tbody tr.picked-up-row:hover {
+  background-color: #a7f3d0;
+  opacity: 0.9;
+}
+
 .checkbox-col {
   width: 80px;
   text-align: center;
@@ -235,20 +270,37 @@ select.input-field {
   background-color: white;
 }
 
-/* Delete button */
-.btn-delete {
+/* Toggle picked button */
+.btn-toggle {
   background: none;
-  border: none;
+  border: 2px solid #d1d5db;
   cursor: pointer;
-  font-size: 1.3rem;
-  padding: 4px 8px;
-  transition: transform 0.2s ease;
-  opacity: 0.6;
+  font-size: 1.5rem;
+  padding: 6px 12px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  color: #9ca3af;
 }
 
-.btn-delete:hover {
-  transform: scale(1.2);
-  opacity: 1;
+.btn-toggle:hover {
+  transform: scale(1.1);
+  border-color: #667eea;
+}
+
+.btn-toggle.picked {
+  background-color: #10b981;
+  border-color: #10b981;
+  color: white;
+}
+
+.btn-toggle.picked:hover {
+  background-color: #059669;
+  border-color: #059669;
 }
 
 /* No Data Message */
