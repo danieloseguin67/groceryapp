@@ -1,6 +1,15 @@
 <div class="container">
   <header class="header">
     <h1>{{ title }}</h1>
+    
+    <!-- Burger menu icon for mobile -->
+    <button class="burger-menu" (click)="toggleMobileMenu()" aria-label="Menu">
+      <span class="burger-line"></span>
+      <span class="burger-line"></span>
+      <span class="burger-line"></span>
+    </button>
+    
+    <!-- Desktop/Tablet buttons -->
     <div class="header-actions">
       <button class="btn btn-success" (click)="addNewRow()">
         <span class="icon">➕</span> Add Item
@@ -19,6 +28,28 @@
       </button>
     </div>
   </header>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" [class.active]="showMobileMenu">
+    <div class="mobile-menu-overlay" (click)="toggleMobileMenu()"></div>
+    <div class="mobile-menu-content">
+      <button class="mobile-menu-item btn-success" (click)="addNewRow(); toggleMobileMenu()">
+        <span class="icon">➕</span> Add Item
+      </button>
+      <button class="mobile-menu-item btn-info" (click)="openSummaryReport(); toggleMobileMenu()">
+        <span class="icon">📊</span> Summary Report
+      </button>
+      <button class="mobile-menu-item btn-warning" (click)="openStatistics(); toggleMobileMenu()">
+        <span class="icon">📈</span> Statistics
+      </button>
+      <button class="mobile-menu-item btn-primary" (click)="saveToExcel(); toggleMobileMenu()">
+        <span class="icon">💾</span> Save
+      </button>
+      <button class="mobile-menu-item btn-secondary" (click)="exitApp(); toggleMobileMenu()">
+        <span class="icon">🚪</span> Exit
+      </button>
+    </div>
+  </div>
 
   <div class="search-section">
     <div class="search-box">
@@ -270,7 +301,8 @@
     </div>
   </div>
 </div>
- 
+
+ 
  <!-- Statistics Modal -->
 <div class="modal-overlay" *ngIf="showStatisticsModal" (click)="closeStatisticsModal()">
   <div class="modal-content modal-large" (click)="$event.stopPropagation()">

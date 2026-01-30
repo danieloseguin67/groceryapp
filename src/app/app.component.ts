@@ -32,6 +32,9 @@ export class AppComponent implements OnInit {
   searchTerm: string = '';
   showOnlyUnpicked: boolean = false;
   
+  // Mobile menu
+  showMobileMenu: boolean = false;
+  
   // Summary Report Modal
   showSummaryModal: boolean = false;
   summaryDate: string = '';
@@ -312,6 +315,10 @@ export class AppComponent implements OnInit {
           alert('Failed to save data. Make sure the save server is running.\n\nRun: npm run server (in a separate terminal)');
         }
       });
+  }
+
+  toggleMobileMenu(): void {
+    this.showMobileMenu = !this.showMobileMenu;
   }
 
   exitApp(): void {
