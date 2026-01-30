@@ -39,22 +39,8 @@ export class AppComponent implements OnInit {
   summaryStore: string = 'Super C';
   grocerySummaries: GrocerySummary[] = [];
   
-  // Store options
-  stores: string[] = [
-    'Super C',
-    'Metro',
-    'IGA',
-    'Maxi',
-    'Provigo',
-    'Loblaws'
-  ];
-  
-  // Summary Report Modal
-  showSummaryModal: boolean = false;
-  summaryDate: string = '';
-  summaryActualCost: number = 0;
-  summaryStore: string = 'Super C';
-  grocerySummaries: GrocerySummary[] = [];
+  // Statistics Modal
+  showStatisticsModal: boolean = false;
   
   // Store options
   stores: string[] = [
@@ -104,28 +90,6 @@ export class AppComponent implements OnInit {
       .subscribe({
         next: (jsonData) => {
           console.log('✅ Successfully loaded JSON file from assets folder');
-          this.processJsonData(jsonData);
-        },
-        error: (error) => {
-          console.error('❌ Error loading JSON file:', error);
-          alert('JSON file not found in assets folder.\n\nPlease ensure grocery-data.json exists in src/assets/ folder');
-        }
-      });
-  }
-
-  loadSummaries(): void {
-    this.http.get<GrocerySummary[]>(this.summariesJsonPath)
-      .subscribe({
-        next: (summaries) => {
-          this.grocerySummaries = summaries;
-          console.log('✅ Successfully loaded summaries');
-        },
-        error: (error) => {
-          console.log('ℹ️ No existing summaries found (this is normal for first time)');
-          this.grocerySummaries = [];
-        }
-      });
-  }
           this.processJsonData(jsonData);
         },
         error: (error) => {
@@ -256,6 +220,48 @@ export class AppComponent implements OnInit {
     this.summaryStore = 'Super C';
   }
 
+  openStatistics(): void {
+    this.showStatisticsModal = true;
+  }
+
+  closeStatisticsModal(): void {
+    this.showStatisticsModal = false;
+  }
+
+  getStoreStatistics(): any[] {
+    const storeData: { [key: string]: { estimated: number, actual: number, count: number } } = {};
+    
+    this.grocerySummaries.forEach(summary => {
+      if (!storeData[summary.store]) {
+        storeData[summary.store] = { estimated: 0, actual: 0, count: 0 };
+      }
+      storeData[summary.store].estimated += summary.estimatedCost;
+      storeData[summary.store].actual += summary.actualCost;
+      storeData[summary.store].count++;
+    });
+
+    return Object.keys(storeData).map(store => ({
+      store,
+      estimatedTotal: storeData[store].estimated,
+      actualTotal: storeData[store].actual,
+      estimatedAvg: storeData[store].estimated / storeData[store].count,
+      actualAvg: storeData[store].actual / storeData[store].count,
+      count: storeData[store].count,
+      difference: storeData[store].actual - storeData[store].estimated
+    }));
+  }
+
+  getMaxValue(): number {
+    const stats = this.getStoreStatistics();
+    if (stats.length === 0) return 100;
+    return Math.max(...stats.map(s => Math.max(s.estimatedTotal, s.actualTotal)));
+  }
+
+  getBarWidth(value: number): number {
+    const max = this.getMaxValue();
+    return (value / max) * 100;
+  }
+
   closeSummaryModal(): void {
     this.showSummaryModal = false;
   }
@@ -289,42 +295,6 @@ export class AppComponent implements OnInit {
           alert('Failed to save summary. Make sure the save server is running.\n\nRun: npm run server (in a separate terminal)');
         }
       });
-  }
-
-  openSummaryReport(): void {
-    this.showSummaryModal = true;
-    // Set default date to today
-    const today = new Date();
-    this.summaryDate = today.toISOString().split('T')[0];
-    this.summaryActualCost = 0;
-    this.summaryStore = 'Super C';
-  }
-
-  closeSummaryModal(): void {
-    this.showSummaryModal = false;
-  }
-
-  getEstimatedCost(): number {
-    return this.groceryData.reduce((total, item) => {
-      return total + (item['Price (CAD)'] * item.Quantity);
-    }, 0);
-  }
-
-  saveSummary(): void {
-    const summary: GrocerySummary = {
-      date: this.summaryDate,
-      estimatedCost: this.getEstimatedCost(),
-      actualCost: this.summaryActualCost,
-      store: this.summaryStore
-    };
-
-    this.grocerySummaries.push(summary);
-    
-    // Save to backend (optional - for now just logging)
-    console.log('Grocery Summary Saved:', summary);
-    alert(`Summary saved!\n\nDate: ${summary.date}\nStore: ${summary.store}\nEstimated: $${summary.estimatedCost.toFixed(2)}\nActual: $${summary.actualCost.toFixed(2)}\nDifference: $${(summary.actualCost - summary.estimatedCost).toFixed(2)}`);
-    
-    this.closeSummaryModal();
   }
 
   saveToExcel(): void {
