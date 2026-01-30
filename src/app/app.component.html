@@ -1,0 +1,125 @@
+<div class="container">
+  <header class="header">
+    <h1>{{ title }}</h1>
+    <div class="header-actions">
+      <button class="btn btn-success" (click)="addNewRow()">
+        <span class="icon">➕</span> Add Item
+      </button>
+      <button class="btn btn-primary" (click)="saveToExcel()">
+        <span class="icon">💾</span> Save
+      </button>
+      <button class="btn btn-secondary" (click)="exitApp()">
+        <span class="icon">🚪</span> Exit
+      </button>
+    </div>
+  </header>
+
+  <div class="search-section">
+    <div class="search-box">
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        (input)="onSearch()" 
+        placeholder="Search grocery items..."
+        class="search-input"
+      />
+      <span class="search-icon">🔍</span>
+    </div>
+    <div class="info">
+      <span class="total-count">
+        Total: {{ filteredData.length }} items
+      </span>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table class="data-table" *ngIf="displayedData.length > 0">
+      <thead>
+        <tr>
+          <th>Actions</th>
+          <th>Category</th>
+          <th>Product Name</th>
+          <th>Brand</th>
+          <th>Size / Details</th>
+          <th>Quantity</th>
+          <th>Price (CAD)</th>
+          <th>Picked Up</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of displayedData; let i = index">
+          <td class="actions-col">
+            <button class="btn-delete" (click)="deleteRow(item)" title="Delete">
+              🗑️
+            </button>
+          </td>
+          <td>
+            <select [(ngModel)]="item.Category" class="input-field">
+              <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+            </select>
+          </td>
+          <td>
+            <input type="text" [(ngModel)]="item['Product Name']" class="input-field" />
+          </td>
+          <td>
+            <input type="text" [(ngModel)]="item.Brand" class="input-field" />
+          </td>
+          <td>
+            <input type="text" [(ngModel)]="item['Size / Details']" class="input-field" />
+          </td>
+          <td>
+            <input type="number" [(ngModel)]="item.Quantity" class="input-field input-number" />
+          </td>
+          <td>
+            <input type="number" [(ngModel)]="item['Price (CAD)']" step="0.01" class="input-field input-number" />
+          </td>
+          <td class="checkbox-col">
+            <input 
+              type="checkbox" 
+              [(ngModel)]="item['Picked Up']"
+            />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="no-data" *ngIf="displayedData.length === 0">
+      <p>No data found</p>
+    </div>
+  </div>
+
+  <div class="pagination" *ngIf="totalPages > 1">
+    <button 
+      class="btn-page" 
+      (click)="previousPage()" 
+      [disabled]="currentPage === 1"
+    >
+      ‹ Previous
+    </button>
+    
+    <div class="page-numbers">
+      <button 
+        *ngFor="let page of pageNumbers" 
+        class="btn-page-number" 
+        [class.active]="page === currentPage"
+        (click)="onPageChange(page)"
+      >
+        {{ page }}
+      </button>
+    </div>
+    
+    <button 
+      class="btn-page" 
+      (click)="nextPage()" 
+      [disabled]="currentPage === totalPages"
+    >
+      Next ›
+    </button>
+  </div>
+
+  <div class="pagination-info">
+    Showing {{ (currentPage - 1) * itemsPerPage + 1 }} - 
+    {{ Math.min(currentPage * itemsPerPage, filteredData.length) }} 
+    of {{ filteredData.length }} items
+  </div>
+</div>

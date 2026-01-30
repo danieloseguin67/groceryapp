@@ -1,0 +1,304 @@
+[
+  {
+    "Category": "Fruits et légumes",
+    "Product Name": "Cantaloup jumbo",
+    "Size / Details": "Vendu individuellement",
+    "Quantity": 1,
+    "Price (CAD)": 3.97,
+    "Picked Up": false
+  },
+  {
+    "Category": "Fruits et légumes",
+    "Product Name": "Poivron vert",
+    "Size / Details": "Vendu individuellement",
+    "Quantity": 1,
+    "Price (CAD)": 2.11,
+    "Picked Up": false
+  },
+  {
+    "Category": "Produits laitiers et œufs",
+    "Product Name": "Tartinade de fromage légère",
+    "Brand": "Cheez Whiz",
+    "Size / Details": "450 g",
+    "Quantity": 1,
+    "Price (CAD)": 3.97,
+    "Picked Up": false
+  },
+  {
+    "Category": "Produits laitiers et œufs",
+    "Product Name": "Lait 2 %",
+    "Brand": "Québon",
+    "Size / Details": "4 L",
+    "Quantity": 1,
+    "Price (CAD)": 7.97,
+    "Picked Up": false
+  },
+  {
+    "Category": "Produits laitiers et œufs",
+    "Product Name": "Fromage pizza mozzarella",
+    "Brand": "Selection",
+    "Size / Details": "400 g",
+    "Quantity": 1,
+    "Price (CAD)": 4.47,
+    "Picked Up": false
+  },
+  {
+    "Category": "Produits laitiers et œufs",
+    "Product Name": "Oeufs gros",
+    "Quantity": 1,
+    "Price (CAD)": 4.09,
+    "Picked Up": false
+  },
+  {
+    "Category": "Produits laitiers et œufs",
+    "Product Name": "marguerine",
+    "Quantity": 1,
+    "Price (CAD)": 4,
+    "Picked Up": false
+  },
+  {
+    "Category": "Garde-Manger",
+    "Product Name": "Sauce pour pâte aux tomates et basilic",
+    "Brand": "Classico",
+    "Size / Details": "600 mL",
+    "Quantity": 1,
+    "Price (CAD)": 1.99,
+    "Picked Up": false
+  },
+  {
+    "Category": "Garde-Manger",
+    "Product Name": "Céréales avoine et amandes au miel",
+    "Brand": "Quaker",
+    "Size / Details": "475 g",
+    "Quantity": 1,
+    "Price (CAD)": 3.49,
+    "Picked Up": false
+  },
+  {
+    "Category": "Garde-Manger",
+    "Product Name": "Poudding tapioca",
+    "Brand": "Selection",
+    "Quantity": 1,
+    "Price (CAD)": 1.89,
+    "Picked Up": false
+  },
+  {
+    "Category": "Garde-Manger",
+    "Product Name": "croustille legumes",
+    "Brand": "Sensible portions",
+    "Size / Details": "120 g",
+    "Quantity": 1,
+    "Price (CAD)": 2.49,
+    "Picked Up": false
+  },
+  {
+    "Category": "Garde-Manger",
+    "Product Name": "Chips BBQ",
+    "Quantity": 1,
+    "Price (CAD)": 1,
+    "Picked Up": false
+  },
+  {
+    "Category": "Boissons",
+    "Product Name": "Jus Explosion d’orange (concentré)",
+    "Brand": "Selection",
+    "Size / Details": "1 L",
+    "Quantity": 1,
+    "Price (CAD)": 1.59,
+    "Picked Up": false
+  },
+  {
+    "Category": "Boissons",
+    "Product Name": "Dosettes de café K‑Cup torréfaction moyenne",
+    "Brand": "Irrésistible",
+    "Size / Details": "12 unités",
+    "Quantity": 1,
+    "Price (CAD)": 7.99,
+    "Picked Up": false
+  },
+  {
+    "Category": "Boissons",
+    "Product Name": "eau gazifiee",
+    "Brand": "Selection",
+    "Size / Details": "Boite de 12",
+    "Quantity": 1,
+    "Price (CAD)": 5.49,
+    "Picked Up": false
+  },
+  {
+    "Category": "Boissons",
+    "Product Name": "vin rouge keep calm",
+    "Quantity": 1,
+    "Price (CAD)": 11.59,
+    "Picked Up": false
+  },
+  {
+    "Category": "Boissons",
+    "Product Name": "Gingerale",
+    "Brand": "Selection",
+    "Quantity": 1,
+    "Price (CAD)": 1.49,
+    "Picked Up": false
+  },
+  {
+    "Category": "Boissons",
+    "Product Name": "Cola diete",
+    "Brand": "Selection",
+    "Quantity": 1,
+    "Price (CAD)": 1.49,
+    "Picked Up": false
+  },
+  {
+    "Category": "Viandes et volailles",
+    "Product Name": "Poitrines de poulet désossées sans peau",
+    "Brand": "Prime",
+    "Quantity": 1,
+    "Price (CAD)": 16.66,
+    "Picked Up": false
+  },
+  {
+    "Category": "Viandes et volailles",
+    "Product Name": "Saucisse dejeuner",
+    "Quantity": 1,
+    "Price (CAD)": 3.99,
+    "Picked Up": false
+  },
+  {
+    "Category": "Viandes et volailles",
+    "Product Name": "Tranches de surlonge de porc désossées",
+    "Brand": "Format économique",
+    "Size / Details": "4 tranches",
+    "Quantity": 1,
+    "Price (CAD)": 6.13,
+    "Picked Up": false
+  },
+  {
+    "Category": "Viandes et volailles",
+    "Product Name": "Jambon foret noir",
+    "Size / Details": "400 g",
+    "Quantity": 1,
+    "Price (CAD)": 10.49,
+    "Picked Up": false
+  },
+  {
+    "Category": "Viandes et volailles",
+    "Product Name": "Boeuf hache",
+    "Quantity": 1,
+    "Price (CAD)": 9,
+    "Picked Up": false
+  },
+  {
+    "Category": "Viandes et volailles",
+    "Product Name": "dinde hache",
+    "Quantity": 1,
+    "Price (CAD)": 5.99,
+    "Picked Up": false
+  },
+  {
+    "Category": "Collations",
+    "Product Name": "Biscuits tendres avoine aux fraises",
+    "Brand": "Dare",
+    "Size / Details": "280 g",
+    "Quantity": 1,
+    "Price (CAD)": 3.99,
+    "Picked Up": false
+  },
+  {
+    "Category": "Collations",
+    "Product Name": "Compote de pommes saveur poire",
+    "Brand": "Mott’s",
+    "Size / Details": "6 × 113 g",
+    "Quantity": 1,
+    "Price (CAD)": 2.49,
+    "Picked Up": false
+  },
+  {
+    "Category": "Collations",
+    "Product Name": "Craquelins ble entier",
+    "Brand": "Seelction",
+    "Size / Details": "200 g",
+    "Quantity": 1,
+    "Price (CAD)": 2.99,
+    "Picked Up": false
+  },
+  {
+    "Category": "Collations",
+    "Product Name": "Craquelins legumes",
+    "Brand": "Seelction",
+    "Size / Details": "200 g",
+    "Quantity": 1,
+    "Price (CAD)": 2.99,
+    "Picked Up": false
+  },
+  {
+    "Category": "Produits surgelés",
+    "Product Name": "Pizza",
+    "Brand": "Mikes",
+    "Quantity": 2,
+    "Price (CAD)": 22.98,
+    "Picked Up": false
+  },
+  {
+    "Category": "Produits surgelés",
+    "Product Name": "Frites coupe ondulée surgelées",
+    "Brand": "Selection",
+    "Size / Details": "800 g",
+    "Quantity": 1,
+    "Price (CAD)": 2.49,
+    "Picked Up": false
+  },
+  {
+    "Category": "Produits surgelés",
+    "Product Name": "Bâtonnets de poisson panés",
+    "Brand": "Prise du Jour",
+    "Size / Details": "350 g",
+    "Quantity": 1,
+    "Price (CAD)": 4.99,
+    "Picked Up": false
+  },
+  {
+    "Category": "Pains et pâtisseries",
+    "Product Name": "Pain avoine et sésame Campagnolo",
+    "Brand": "St‑Méthode",
+    "Size / Details": "650 g",
+    "Quantity": 1,
+    "Price (CAD)": 4.89,
+    "Picked Up": false
+  },
+  {
+    "Category": "Pains et pâtisseries",
+    "Product Name": "Pain blanc",
+    "Quantity": 1,
+    "Price (CAD)": 4.29,
+    "Picked Up": false
+  },
+  {
+    "Category": "Pains et pâtisseries",
+    "Product Name": "Pain hamburger",
+    "Quantity": 1,
+    "Price (CAD)": 2.69,
+    "Picked Up": false
+  },
+  {
+    "Category": "Entretien ménager",
+    "Product Name": "Sacs à ordures extra‑petits",
+    "Brand": "Selection",
+    "Size / Details": "52 unités",
+    "Quantity": 1,
+    "Price (CAD)": 3.79,
+    "Picked Up": false
+  },
+  {
+    "Category": "Entretien ménager",
+    "Product Name": "Papier parchemin",
+    "Brand": "Selection",
+    "Size / Details": "1 unité",
+    "Quantity": 1,
+    "Price (CAD)": 3.79,
+    "Picked Up": false
+  },
+  {
+    "Price (CAD)": 185.71,
+    "Picked Up": false
+  }
+]
