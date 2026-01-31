@@ -61,6 +61,7 @@ export class AppComponent implements OnInit {
   
   // About Solution Modal
   showAboutModal: boolean = false;
+  private tempAboutOverlay?: HTMLElement;
   
   // Google Drive Integration
   isGoogleSignedIn: boolean = false;
@@ -991,6 +992,7 @@ export class AppComponent implements OnInit {
         <li>Save regularly and create a summary after every trip.</li>
         <li>Use search and filters to manage large lists.</li>
         <li>Back up with downloads; restore with uploads.</li>
+        <li>Use Google Drive integration for cloud backups, and also to import/export grocery and summary data between your mobile device that you are using at the grocery store and your laptop/desktop at home.</li>
       </ul>
     `;
 
@@ -1004,11 +1006,83 @@ export class AppComponent implements OnInit {
   // ==================== About Modal Methods ====================
 
   openAboutModal(): void {
+    console.log('ABOUT CLICKED');
+    console.log('showAboutModal BEFORE:', this.showAboutModal);
     this.showAboutModal = true;
+    console.log('showAboutModal AFTER:', this.showAboutModal);
+    this.cdr.detectChanges();
+
+    // If template doesn't render, create a temporary overlay
+    this.ngZone.onStable.pipe(take(1)).subscribe(() => {
+      setTimeout(() => {
+        const renderedAbout = document.querySelector('.modal-about');
+        if (!renderedAbout) {
+          this.createTemporaryAboutOverlay();
+        }
+      }, 100);
+    });
   }
 
   closeAboutModal(): void {
     this.showAboutModal = false;
+    if (this.tempAboutOverlay) {
+      try {
+        document.body.removeChild(this.tempAboutOverlay);
+      } catch {}
+      this.tempAboutOverlay = undefined;
+    }
+  }
+
+  private createTemporaryAboutOverlay(): void {
+    if (this.tempAboutOverlay) return;
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.right = '0';
+    overlay.style.bottom = '0';
+    overlay.style.background = 'rgba(0,0,0,0.85)';
+    overlay.style.zIndex = '999999';
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    overlay.addEventListener('click', () => this.closeAboutModal());
+
+    const content = document.createElement('div');
+    content.style.background = 'white';
+    content.style.padding = '24px';
+    content.style.borderRadius = '12px';
+    content.style.maxWidth = '600px';
+    content.style.width = '90%';
+    content.style.maxHeight = '80vh';
+    content.style.overflowY = 'auto';
+    content.addEventListener('click', (e) => e.stopPropagation());
+
+    const header = document.createElement('div');
+    header.style.display = 'flex';
+    header.style.alignItems = 'center';
+    header.style.justifyContent = 'space-between';
+    const h2 = document.createElement('h2');
+    h2.textContent = 'About Solution';
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = 'Close';
+    closeBtn.addEventListener('click', () => this.closeAboutModal());
+    header.appendChild(h2);
+    header.appendChild(closeBtn);
+
+    const body = document.createElement('div');
+    body.innerHTML = `
+      <p>
+        Grocery Manager was developed by <strong>Daniel Seguin</strong> of <strong>SeguinDev</strong>
+        in January 2026.
+      </p>
+    `;
+
+    content.appendChild(header);
+    content.appendChild(body);
+    overlay.appendChild(content);
+    document.body.appendChild(overlay);
+    this.tempAboutOverlay = overlay;
   }
 }
 

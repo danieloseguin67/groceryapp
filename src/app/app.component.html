@@ -372,174 +372,78 @@
     
     <div class="modal-body">
       <div class="help-section">
-        <h3>Getting Started</h3>
+        <h3>Buttons Overview</h3>
         <div class="help-content">
-          <p>Welcome to Grocery Manager! This app helps you plan your grocery shopping and track your spending.</p>
-          <p>All your data is saved in your browser and can be downloaded as files for backup or transfer to another device.</p>
+          <ul>
+            <li><span class="help-btn">Add Item</span>: Adds a new row to your list so you can enter Category, Product Name, Brand, Size/Details, Quantity, and Price (CAD).</li>
+            <li><span class="help-btn">Summary Report</span>: Opens a modal to view saved summaries and create a new one after a trip (enter Date, Store, and Actual Cost; Estimated Cost is auto-calculated from picked items).</li>
+            <li><span class="help-btn">Statistics</span>: Shows charts comparing Estimated vs Actual costs by date and store (based on your saved summaries).</li>
+            <li><span class="help-btn">Help</span>: Displays this guide.</li>
+            <li><span class="help-btn">About Solution</span>: Shows information about the app.</li>
+            <li><span class="help-btn">Save</span>: Saves your current grocery list to browser storage (localStorage) on this device.</li>
+            <li><span class="help-btn">Download Data</span>: Downloads your grocery list as a JSON file (named with your customer ID and date).</li>
+            <li><span class="help-btn">Download Summaries</span>: Downloads your summaries as a JSON file.</li>
+            <li><span class="help-btn">Upload Data</span>: Loads a previously downloaded grocery data JSON file into the app.</li>
+            <li><span class="help-btn">Upload Summaries</span>: Loads a previously downloaded summaries JSON file into the app.</li>
+            <li><span class="help-btn">Logout</span>: Signs you out and returns to the login screen.</li>
+          </ul>
         </div>
       </div>
 
       <div class="help-section">
-        <h3>Adding Grocery Items</h3>
+        <h3>Editing Your List</h3>
         <div class="help-content">
+          <ul>
+            <li>Type directly in the table to edit item fields.</li>
+            <li>Use the checkbox in the "Picked Up" column to mark items you’ve bought.</li>
+            <li>Click the trash icon in the "Actions" column to delete an item.</li>
+            <li>Use the search box and the "Show only unpicked items" filter to find and focus on what you still need.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="help-section">
+        <h3>Backups and Transfers</h3>
+        <div class="help-content">
+          <ul>
+            <li>Click <span class="help-btn">Save</span> to store your list locally in the browser (persists across reloads on the same device).</li>
+            <li>Use <span class="help-btn">Download Data</span> and <span class="help-btn">Download Summaries</span> to create JSON backups.</li>
+            <li>On a new device, use <span class="help-btn">Upload Data</span> and <span class="help-btn">Upload Summaries</span> to restore from those files.</li>
+          </ul>
+          <p>Tip: Install the Google Drive app on your mobile device to easily export and import files between your phone and your laptop/desktop.</p>
+        </div>
+      </div>
+
+      <div class="help-section">
+        <h3>Using Google Drive (Mobile Tip)</h3>
+        <div class="help-content">
+          <p>To make moving files between your computer and phone easier, install the Google Drive app on your mobile device.</p>
           <ol>
-            <li>Click the <span class="help-btn">Add Item</span> button</li>
-            <li>Fill in the item details:
-              <ul>
-                <li><strong>Category:</strong> Select from dropdown (e.g., Fruits et l�gumes)</li>
-                <li><strong>Product Name:</strong> Enter the item name</li>
-                <li><strong>Brand:</strong> Optional brand name</li>
-                <li><strong>Size/Details:</strong> Package size or quantity details</li>
-                <li><strong>Quantity:</strong> Number of items needed</li>
-                <li><strong>Price:</strong> Price per item in CAD</li>
-              </ul>
-            </li>
-            <li>Click <strong>Add</strong> to save the item to your list</li>
+            <li>On your computer, click <span class="help-btn">Download Data</span> and/or <span class="help-btn">Download Summaries</span>, then upload those JSON files to Google Drive (web).</li>
+            <li>On your phone, open the Google Drive app, download the JSON files to your device.</li>
+            <li>In Grocery Manager on your phone, tap <span class="help-btn">Upload Data</span> and <span class="help-btn">Upload Summaries</span> and select the downloaded files.</li>
           </ol>
+          <p>This flow simplifies downloading and uploading grocery data and summaries across devices.</p>
         </div>
       </div>
 
       <div class="help-section">
-        <h3>Managing Your Grocery List</h3>
-        <div class="help-content">
-          <p><strong>Edit Items:</strong></p>
-          <ul>
-            <li>Click the <strong>?? Edit</strong> button next to any item</li>
-            <li>Modify quantities, prices, or other details</li>
-            <li>Click <strong>Save</strong> to confirm changes</li>
-          </ul>
-          <p><strong>Mark as Picked Up:</strong></p>
-          <ul>
-            <li>Check the ? box when you pick up an item while shopping</li>
-            <li>This helps track what you've collected</li>
-          </ul>
-          <p><strong>Search and Filter:</strong></p>
-          <ul>
-            <li>Use the search box to find specific items</li>
-            <li>Toggle "Show only unpicked items" to focus on what's left</li>
-          </ul>
-          <p><strong>Delete Items:</strong></p>
-          <ul>
-            <li>Click the <strong> Delete</strong> button to remove items</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="help-section">
-        <h3>?? Saving Your Work</h3>
-        <div class="help-content">
-          <p><strong>Save to Browser Storage:</strong></p>
-          <ul>
-            <li>Click the <span class="help-btn">?? Save</span> button</li>
-            <li>Your data is saved locally in your browser</li>
-            <li>It will persist even if you close the browser</li>
-            <li><strong>Note:</strong> Browser data is device-specific and can be cleared</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="help-section">
-        <h3>?? Creating a Summary Report</h3>
-        <div class="help-content">
-          <ol>
-            <li>After shopping, click <span class="help-btn">?? Summary Report</span></li>
-            <li>Enter the following information:
-              <ul>
-                <li><strong>Date:</strong> Date of shopping trip</li>
-                <li><strong>Store:</strong> Which store you shopped at</li>
-                <li><strong>Actual Cost:</strong> Total amount you actually spent</li>
-              </ul>
-            </li>
-            <li>The estimated cost is calculated automatically from your picked items</li>
-            <li>Click <strong>Save Summary</strong> to store this record</li>
-            <li>Summaries help you track spending patterns over time</li>
-          </ol>
-        </div>
-      </div>
-
-      <div class="help-section">
-        <h3>?? Download / Backup Your Data</h3>
-        <div class="help-content">
-          <p><strong>Download buttons save files to your Downloads folder:</strong></p>
-          <ul>
-            <li><span class="help-btn">?? Download Data</span> - Saves your grocery list as a JSON file</li>
-            <li><span class="help-btn">?? Download Summaries</span> - Saves your summaries as a JSON file</li>
-            <li>Files are named with your customer ID and date for easy identification</li>
-            <li>Keep these files safe as backups</li>
-            <li>Use them to transfer data to another device or browser</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="help-section">
-        <h3>?? Upload Data on Another Device</h3>
-        <div class="help-content">
-          <p><strong>Transfer your data to a new device or browser:</strong></p>
-          <ol>
-            <li>Sign in to Grocery Manager on the new device</li>
-            <li>Click <span class="help-btn">?? Upload Data</span> button</li>
-            <li>Select your previously downloaded grocery data JSON file</li>
-            <li>Click <span class="help-btn">?? Upload Summaries</span> button</li>
-            <li>Select your previously downloaded summaries JSON file</li>
-            <li>Data will be loaded automatically and saved to browser storage</li>
-          </ol>
-          <p><strong>Note:</strong> The upload buttons look for files in your Downloads folder by default.</p>
-        </div>
-      </div>
-          <p><strong>Load from Google Drive (Easiest):</strong></p>
-      <div class="help-section">
-        <h3>?? Viewing Statistics</h3>
-        <div class="help-content">
-          <ol>
-            <li>Click <span class="help-btn">?? Statistics</span> button</li>
-            <li>View spending patterns by store:
-              <ul>
-                <li>Average estimated vs actual costs</li>
-                <li>Total spending per store</li>
-                <li>Cost differences (savings or overspending)</li>
-              </ul>
-            </li>
-            <li>Statistics are calculated from your saved summaries</li>
-            <li>You can also upload specific summary files to analyze past data</li>
-          </ol>
-        </div>
-      </div>
-
-      <div class="help-section">
-        <h3>?? Tips & Best Practices</h3>
-        <div class="help-content">
-          <ul>
-            <li>? <strong>Save regularly</strong> - Click ?? Save after making changes</li>
-            <li>?? <strong>Download backups</strong> periodically for safekeeping</li>
-            <li>?? <strong>Create summaries</strong> after every shopping trip for accurate statistics</li>
-            <li>?? <strong>Use search</strong> to quickly find items in large lists</li>
-            <li>?? <strong>Update quantities</strong> as you plan meals for the week</li>
-            <li> <strong>Clean up old items</strong> to keep your list manageable</li>
-            <li>?? <strong>Upload previous data</strong> when switching devices or browsers</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="help-section">
-        <h3>?? Troubleshooting</h3>
+        <h3>Troubleshooting</h3>
         <div class="help-content">
           <p><strong>Data not appearing after reload?</strong></p>
           <ul>
-            <li>Make sure you clicked the ?? Save button</li>
-            <li>Check if browser data/cookies are being cleared automatically</li>
-            <li>Download your data as a backup and re-upload if needed</li>
+            <li>Ensure you clicked <span class="help-btn">Save</span> after editing.</li>
+            <li>Browser storage is device-specific and can be cleared; keep JSON backups.</li>
           </ul>
           <p><strong>Upload not working?</strong></p>
           <ul>
-            <li>Ensure the file is in JSON format</li>
-            <li>Verify the file was downloaded from this application</li>
-            <li>Check that the file isn't corrupted or empty</li>
+            <li>Verify the file is a valid JSON exported from this app.</li>
+            <li>If in doubt, re-download from the original device and try again.</li>
           </ul>
           <p><strong>Can't find downloaded files?</strong></p>
           <ul>
-            <li>Check your browser's Downloads folder</li>
-            <li>File names include customer ID and timestamp for identification</li>
-            <li>Look for files named like: grocery-data-CUSTOMER123-20240315-120000.json</li>
+            <li>Check your browser’s Downloads folder.</li>
+            <li>Files are named like: grocery-data-CUSTOMER123-YYYY-MM-DD.json.</li>
           </ul>
         </div>
       </div>
@@ -556,7 +460,7 @@
 
 <!-- About Solution Modal -->
 <div class="modal-overlay" *ngIf="showAboutModal" (click)="closeAboutModal()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
+  <div class="modal-content modal-about" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h2>About Solution</h2>
       <button class="btn-close" (click)="closeAboutModal()"></button>
