@@ -102,6 +102,8 @@
   padding: 80px 20px 20px;
   gap: 15px;
   transition: right 0.3s ease;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .mobile-menu.active .mobile-menu-content {

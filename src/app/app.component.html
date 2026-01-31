@@ -73,6 +73,9 @@
   <div class="mobile-menu" [class.active]="showMobileMenu">
     <div class="mobile-menu-overlay" (click)="toggleMobileMenu()"></div>
     <div class="mobile-menu-content">
+      <button class="mobile-menu-item btn-secondary" (click)="logout(); toggleMobileMenu()">
+        Logout
+      </button>
       <button class="mobile-menu-item btn-success" (click)="addNewRow(); toggleMobileMenu()">
         Add Item
       </button>
@@ -105,9 +108,6 @@
       </button>
       <button class="mobile-menu-item btn-success" (click)="uploadSummariesFile.click(); toggleMobileMenu()">
         Upload Summaries
-      </button>
-      <button class="mobile-menu-item btn-secondary" (click)="logout(); toggleMobileMenu()">
-        Logout
       </button>
     </div>
   </div>
