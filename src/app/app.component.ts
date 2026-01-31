@@ -287,7 +287,11 @@ export class AppComponent implements OnInit {
 
   getEstimatedCost(): number {
     return this.groceryData.reduce((total, item) => {
-      return total + (item['Price (CAD)'] * item.Quantity);
+      // Only include items that were picked up
+      if (item['Picked Up']) {
+        return total + (item['Price (CAD)'] * item.Quantity);
+      }
+      return total;
     }, 0);
   }
 
