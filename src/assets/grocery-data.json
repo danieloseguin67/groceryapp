@@ -1,13 +1,16 @@
 [
   {
+    "customer_id": "dos",
     "Category": "Fruits et légumes",
     "Product Name": "Cantaloup jumbo",
+    "Brand": "",
     "Size / Details": "Vendu individuellement",
     "Quantity": 1,
     "Price (CAD)": 3.97,
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Fruits et légumes",
     "Product Name": "Poivron vert",
     "Size / Details": "Vendu individuellement",
@@ -16,6 +19,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Produits laitiers et œufs",
     "Product Name": "Tartinade de fromage légère",
     "Brand": "Cheez Whiz",
@@ -25,6 +29,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Produits laitiers et œufs",
     "Product Name": "Lait 2 %",
     "Brand": "Québon",
@@ -34,6 +39,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Produits laitiers et œufs",
     "Product Name": "Fromage pizza mozzarella",
     "Brand": "Selection",
@@ -43,6 +49,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Produits laitiers et œufs",
     "Product Name": "Oeufs gros",
     "Quantity": 1,
@@ -50,6 +57,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Produits laitiers et œufs",
     "Product Name": "marguerine",
     "Quantity": 1,
@@ -57,6 +65,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Garde-Manger",
     "Product Name": "Sauce pour pâte aux tomates et basilic",
     "Brand": "Classico",
@@ -66,6 +75,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Garde-Manger",
     "Product Name": "Céréales avoine et amandes au miel",
     "Brand": "Quaker",
@@ -75,6 +85,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Garde-Manger",
     "Product Name": "Poudding tapioca",
     "Brand": "Selection",
@@ -83,6 +94,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Garde-Manger",
     "Product Name": "croustille legumes",
     "Brand": "Sensible portions",
@@ -92,6 +104,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Garde-Manger",
     "Product Name": "Chips BBQ",
     "Quantity": 1,
@@ -99,6 +112,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Boissons",
     "Product Name": "Jus Explosion d’orange (concentré)",
     "Brand": "Selection",
@@ -108,6 +122,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Boissons",
     "Product Name": "Dosettes de café K‑Cup torréfaction moyenne",
     "Brand": "Irrésistible",
@@ -117,6 +132,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Boissons",
     "Product Name": "eau gazifiee",
     "Brand": "Selection",
@@ -126,6 +142,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Boissons",
     "Product Name": "vin rouge keep calm",
     "Quantity": 1,
@@ -133,6 +150,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Boissons",
     "Product Name": "Gingerale",
     "Brand": "Selection",
@@ -141,6 +159,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Boissons",
     "Product Name": "Cola diete",
     "Brand": "Selection",
@@ -149,6 +168,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Viandes et volailles",
     "Product Name": "Poitrines de poulet désossées sans peau",
     "Brand": "Prime",
@@ -157,6 +177,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Viandes et volailles",
     "Product Name": "Saucisse dejeuner",
     "Quantity": 1,
@@ -164,6 +185,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Viandes et volailles",
     "Product Name": "Tranches de surlonge de porc désossées",
     "Brand": "Format économique",
@@ -173,6 +195,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Viandes et volailles",
     "Product Name": "Jambon foret noir",
     "Size / Details": "400 g",
@@ -181,6 +204,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Viandes et volailles",
     "Product Name": "Boeuf hache",
     "Quantity": 1,
@@ -188,6 +212,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Viandes et volailles",
     "Product Name": "dinde hache",
     "Quantity": 1,
@@ -195,6 +220,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Collations",
     "Product Name": "Biscuits tendres avoine aux fraises",
     "Brand": "Dare",
@@ -204,6 +230,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Collations",
     "Product Name": "Compote de pommes saveur poire",
     "Brand": "Mott’s",
@@ -213,6 +240,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Collations",
     "Product Name": "Craquelins ble entier",
     "Brand": "Seelction",
@@ -222,6 +250,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Collations",
     "Product Name": "Craquelins legumes",
     "Brand": "Seelction",
@@ -231,6 +260,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Produits surgelés",
     "Product Name": "Pizza",
     "Brand": "Mikes",
@@ -239,6 +269,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Produits surgelés",
     "Product Name": "Frites coupe ondulée surgelées",
     "Brand": "Selection",
@@ -248,6 +279,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Produits surgelés",
     "Product Name": "Bâtonnets de poisson panés",
     "Brand": "Prise du Jour",
@@ -257,6 +289,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Pains et pâtisseries",
     "Product Name": "Pain avoine et sésame Campagnolo",
     "Brand": "St‑Méthode",
@@ -266,6 +299,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Pains et pâtisseries",
     "Product Name": "Pain blanc",
     "Quantity": 1,
@@ -273,6 +307,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Pains et pâtisseries",
     "Product Name": "Pain hamburger",
     "Quantity": 1,
@@ -280,6 +315,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Entretien ménager",
     "Product Name": "Sacs à ordures extra‑petits",
     "Brand": "Selection",
@@ -289,6 +325,7 @@
     "Picked Up": false
   },
   {
+    "customer_id": "dos",
     "Category": "Entretien ménager",
     "Product Name": "Papier parchemin",
     "Brand": "Selection",

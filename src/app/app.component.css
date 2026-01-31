@@ -20,7 +20,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
-  padding: 20px;
+  padding: 30px 25px;
+  min-height: 120px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -28,13 +29,15 @@
 }
 
 .header h1 {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 600;
 }
 
 .header-actions {
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 /* Burger Menu Icon (hidden on tablet/desktop) */
@@ -559,16 +562,18 @@ select.input-field {
 
 /* Modal Styles */
 .modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10001 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .modal-content {
@@ -840,4 +845,262 @@ select.input-field {
   font-size: 1.1rem;
   font-weight: 700;
   color: #374151;
+}
+
+/* Google Drive Buttons */
+.btn-google {
+  background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-google:hover {
+  background: linear-gradient(135deg, #3367d6 0%, #2d8e47 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(66, 133, 244, 0.3);
+}
+
+.btn-google-signout {
+  background: linear-gradient(135deg, #ea4335 0%, #fbbc04 100%);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-google-signout:hover {
+  background: linear-gradient(135deg, #d33426 0%, #f9ab00 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(234, 67, 53, 0.3);
+}
+
+.btn-drive {
+  background: linear-gradient(135deg, #4285f4 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  font-size: 0.9rem;
+  padding: 10px 16px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-drive:hover {
+  background: linear-gradient(135deg, #3367d6 0%, #5c3a7f 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(66, 133, 244, 0.3);
+}
+
+.btn-drive-upload {
+  background: linear-gradient(135deg, #34a853 0%, #10b981 100%);
+  color: white;
+  border: none;
+  font-size: 0.95rem;
+  padding: 10px 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-drive-upload:hover {
+  background: linear-gradient(135deg, #2d8e47 0%, #059669 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(52, 168, 83, 0.3);
+}
+
+/* Button Group for Download Options */
+.btn-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+/* Button Divider */
+.btn-divider {
+  width: 2px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.3);
+  margin: 0 5px;
+}
+
+/* Drive Loading Overlay */
+.drive-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.drive-loading-content {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 20px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.drive-loading-content p {
+  font-size: 1rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+/* Drive Status Message */
+.drive-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: white;
+  padding: 15px 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  animation: slideIn 0.3s ease;
+  max-width: 400px;
+  font-weight: 500;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Help Modal Specific Styles */
+.modal-help {
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.help-section {
+  margin-bottom: 30px;
+  padding-bottom: 25px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.help-section:last-child {
+  border-bottom: none;
+}
+
+.help-section h3 {
+  color: #667eea;
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.help-content {
+  color: #374151;
+  line-height: 1.8;
+}
+
+.help-content p {
+  margin-bottom: 12px;
+}
+
+.help-content strong {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.help-content ul,
+.help-content ol {
+  margin: 10px 0 15px 25px;
+}
+
+.help-content li {
+  margin-bottom: 8px;
+}
+
+.help-content ul ul,
+.help-content ol ul {
+  margin-top: 5px;
+}
+
+.help-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Responsive adjustments for help modal */
+@media (max-width: 768px) {
+  .modal-help {
+    max-width: 95%;
+    margin: 10px;
+  }
+  
+  .help-section h3 {
+    font-size: 1.1rem;
+  }
+  
+  .help-content {
+    font-size: 0.95rem;
+  }
+}
+/* Statistics Modal Styles */
+.modal-statistics {
+  max-width: 1000px;
+  width: 95%;
+}
+
+.modal-statistics .chart-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  height: 500px;
+  position: relative;
+}
+
+.modal-statistics canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+@media (max-width: 768px) {
+  .modal-statistics {
+    max-width: 95%;
+    margin: 10px;
+  }
+  
+  .modal-statistics .chart-container {
+    height: 400px;
+  }
 }

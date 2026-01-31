@@ -1,0 +1,16 @@
+<div class="login-container">
+  <h2>Login</h2>
+  <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+    <div>
+      <label for="customerId">Customer ID:</label>
+      <input type="text" id="customerId" name="customerId" [(ngModel)]="customerId" required />
+    </div>
+    <div>
+      <label for="appToken">Application Token:</label>
+      <input type="password" id="appToken" name="appToken" [(ngModel)]="appToken" required />
+    </div>
+    <div *ngIf="loginError" class="error">{{ loginError }}</div>
+    <div *ngIf="loginSuccess" class="success">Welcome to the Grocery App! Redirecting...</div>
+    <button type="submit" [disabled]="loginForm.invalid || loginSuccess">Login</button>
+  </form>
+</div>
