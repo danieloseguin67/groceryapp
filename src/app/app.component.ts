@@ -88,32 +88,48 @@ export class AppComponent implements OnInit {
   }
 
   loadJsonData(): void {
-    // Load from local JSON file
-    this.http.get<any[]>(this.localJsonPath)
-      .subscribe({
-        next: (jsonData) => {
-          console.log('✅ Successfully loaded JSON file from assets folder');
-          this.processJsonData(jsonData);
-        },
-        error: (error) => {
-          console.error('❌ Error loading JSON file:', error);
-          alert('JSON file not found in assets folder.\n\nPlease ensure grocery-data.json exists in src/assets/ folder');
-        }
-      });
+    // Try loading from localStorage first
+    const savedData = localStorage.getItem('grocery-data');
+    
+    if (savedData) {
+      console.log('✅ Loading data from browser storage');
+      this.processJsonData(JSON.parse(savedData));
+    } else {
+      // Fallback to loading from assets folder (initial load)
+      this.http.get<any[]>(this.localJsonPath)
+        .subscribe({
+          next: (jsonData) => {
+            console.log('✅ Successfully loaded JSON file from assets folder');
+            this.processJsonData(jsonData);
+          },
+          error: (error) => {
+            console.error('❌ Error loading JSON file:', error);
+            alert('JSON file not found in assets folder.\n\nPlease ensure grocery-data.json exists in src/assets/ folder');
+          }
+        });
+    }
   }
 
   loadSummaries(): void {
-    this.http.get<GrocerySummary[]>(this.summariesJsonPath)
-      .subscribe({
-        next: (summaries) => {
-          this.grocerySummaries = summaries;
-          console.log('✅ Successfully loaded summaries');
-        },
-        error: (error) => {
-          console.log('ℹ️ No existing summaries found (this is normal for first time)');
-          this.grocerySummaries = [];
-        }
-      });
+    const savedSummaries = localStorage.getItem('grocery-summaries');
+    
+    if (savedSummaries) {
+      this.grocerySummaries = JSON.parse(savedSummaries);
+      console.log('✅ Successfully loaded summaries from browser storage');
+    } else {
+      // Fallback to loading from assets folder (initial load)
+      this.http.get<GrocerySummary[]>(this.summariesJsonPath)
+        .subscribe({
+          next: (summaries) => {
+            this.grocerySummaries = summaries;
+            console.log('✅ Successfully loaded summaries from assets');
+          },
+          error: (error) => {
+            console.log('ℹ️ No existing summaries found (this is normal for first time)');
+            this.grocerySummaries = [];
+          }
+        });
+    }
   }
 
   processJsonData(jsonData: any[]): void {
@@ -285,36 +301,28 @@ export class AppComponent implements OnInit {
 
     this.grocerySummaries.push(summary);
     
-    // Save to backend
-    this.http.post('http://localhost:3000/api/save-summary', this.grocerySummaries)
-      .subscribe({
-        next: (response: any) => {
-          console.log('✅ Summary saved successfully');
-          alert(`Summary saved!\n\nDate: ${summary.date}\nStore: ${summary.store}\nEstimated: $${summary.estimatedCost.toFixed(2)}\nActual: $${summary.actualCost.toFixed(2)}\nDifference: $${(summary.actualCost - summary.estimatedCost).toFixed(2)}`);
-          this.closeSummaryModal();
-        },
-        error: (error) => {
-          console.error('❌ Error saving summary:', error);
-          alert('Failed to save summary. Make sure the save server is running.\n\nRun: npm run server (in a separate terminal)');
-        }
-      });
+    // Save to browser localStorage
+    try {
+      localStorage.setItem('grocery-summaries', JSON.stringify(this.grocerySummaries));
+      console.log('✅ Summary saved successfully to browser storage');
+      alert(`Summary saved!\n\nDate: ${summary.date}\nStore: ${summary.store}\nEstimated: $${summary.estimatedCost.toFixed(2)}\nActual: $${summary.actualCost.toFixed(2)}\nDifference: $${(summary.actualCost - summary.estimatedCost).toFixed(2)}`);
+      this.closeSummaryModal();
+    } catch (error) {
+      console.error('❌ Error saving summary:', error);
+      alert('Failed to save summary to browser storage.');
+    }
   }
 
   saveToExcel(): void {
-    // Save all data to the JSON file via backend
-    const dataToSave = this.groceryData;
-
-    this.http.post('http://localhost:3000/api/save', dataToSave)
-      .subscribe({
-        next: (response: any) => {
-          console.log('✅ Data saved successfully');
-          alert('Data saved successfully to grocery-data.json!');
-        },
-        error: (error) => {
-          console.error('❌ Error saving data:', error);
-          alert('Failed to save data. Make sure the save server is running.\n\nRun: npm run server (in a separate terminal)');
-        }
-      });
+    // Save all data to browser localStorage
+    try {
+      localStorage.setItem('grocery-data', JSON.stringify(this.groceryData));
+      console.log('✅ Data saved successfully to browser storage');
+      alert('Data saved successfully to browser storage!');
+    } catch (error) {
+      console.error('❌ Error saving data:', error);
+      alert('Failed to save data to browser storage.');
+    }
   }
 
   toggleMobileMenu(): void {
