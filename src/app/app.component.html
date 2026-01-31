@@ -38,6 +38,9 @@
       <button class="btn btn-info" (click)="openHelpModal()">
         Help
       </button>
+      <button class="btn btn-secondary" (click)="openAboutModal()">
+        About Solution
+      </button>
       <button class="btn btn-primary" (click)="saveToExcel()">
         Save
       </button>
@@ -78,6 +81,9 @@
       </button>
       <button class="mobile-menu-item btn-info" (click)="openHelpModal(); toggleMobileMenu()">
         Help
+      </button>
+      <button class="mobile-menu-item btn-secondary" (click)="openAboutModal(); toggleMobileMenu()">
+        About Solution
       </button>
       <button class="mobile-menu-item btn-primary" (click)="saveToExcel(); toggleMobileMenu()">
         Save
@@ -543,6 +549,29 @@
       <button class="btn btn-primary" (click)="closeHelpModal()">Got it!</button>
     </div>
   </div>
+</div>
+
+
+
+
+<!-- About Solution Modal -->
+<div class="modal-overlay" *ngIf="showAboutModal" (click)="closeAboutModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>About Solution</h2>
+      <button class="btn-close" (click)="closeAboutModal()"></button>
+    </div>
+    <div class="modal-body">
+      <p>
+        Grocery Manager was developed by <strong>Daniel Seguin</strong> of <strong>SeguinDev</strong>
+        in January 2026.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" (click)="closeAboutModal()">Close</button>
+    </div>
+  </div>
+  
 </div>
 
 

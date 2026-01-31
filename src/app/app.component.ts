@@ -59,6 +59,9 @@ export class AppComponent implements OnInit {
   showHelpModal: boolean = false;
   private tempHelpOverlay?: HTMLElement;
   
+  // About Solution Modal
+  showAboutModal: boolean = false;
+  
   // Google Drive Integration
   isGoogleSignedIn: boolean = false;
   isLoadingDrive: boolean = false;
@@ -996,6 +999,16 @@ export class AppComponent implements OnInit {
     overlay.appendChild(content);
     document.body.appendChild(overlay);
     this.tempHelpOverlay = overlay;
+  }
+
+  // ==================== About Modal Methods ====================
+
+  openAboutModal(): void {
+    this.showAboutModal = true;
+  }
+
+  closeAboutModal(): void {
+    this.showAboutModal = false;
   }
 }
 
