@@ -116,6 +116,8 @@ export class AppComponent implements OnInit {
     if (savedSummaries) {
       this.grocerySummaries = JSON.parse(savedSummaries);
       console.log('✅ Successfully loaded summaries from browser storage');
+      console.log('Number of summaries loaded:', this.grocerySummaries.length);
+      console.log('Summaries:', this.grocerySummaries);
     } else {
       // Fallback to loading from assets folder (initial load)
       this.http.get<GrocerySummary[]>(this.summariesJsonPath)
@@ -245,6 +247,10 @@ export class AppComponent implements OnInit {
     this.showStatisticsModal = true;
     console.log('After:', this.showStatisticsModal);
     console.log('Summaries count:', this.grocerySummaries.length);
+    console.log('Summaries data:', this.grocerySummaries);
+    if (this.grocerySummaries.length > 0) {
+      console.log('Store statistics:', this.getStoreStatistics());
+    }
   }
 
   closeStatisticsModal(): void {
@@ -314,10 +320,15 @@ export class AppComponent implements OnInit {
     try {
       localStorage.setItem('grocery-summaries', JSON.stringify(this.grocerySummaries));
       console.log('✅ Summary saved successfully to browser storage');
+      console.log('Total summaries now:', this.grocerySummaries.length);
+      console.log('Saved data:', this.grocerySummaries);
       alert(`Summary saved!\n\nDate: ${summary.date}\nStore: ${summary.store}\nEstimated: $${summary.estimatedCost.toFixed(2)}\nActual: $${summary.actualCost.toFixed(2)}\nDifference: $${(summary.actualCost - summary.estimatedCost).toFixed(2)}`);
       this.closeSummaryModal();
     } catch (error) {
       console.error('❌ Error saving summary:', error);
+      alert('Failed to save summary to browser storage.');
+    }
+  }
       alert('Failed to save summary to browser storage.');
     }
   }
