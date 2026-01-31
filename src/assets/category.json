@@ -1,0 +1,13 @@
+{
+  "categories": [
+    { "id": "produce", "en": "Fruits & Vegetables", "fr": "Fruits et légumes" },
+    { "id": "dairy-eggs", "en": "Dairy & Eggs", "fr": "Produits laitiers et œufs" },
+    { "id": "pantry", "en": "Pantry", "fr": "Garde-Manger" },
+    { "id": "beverages", "en": "Beverages", "fr": "Boissons" },
+    { "id": "meat-poultry", "en": "Meat & Poultry", "fr": "Viandes et volailles" },
+    { "id": "snacks", "en": "Snacks", "fr": "Collations" },
+    { "id": "frozen", "en": "Frozen Foods", "fr": "Produits surgelés" },
+    { "id": "bakery", "en": "Bread & Bakery", "fr": "Pains et pâtisseries" },
+    { "id": "household", "en": "Household", "fr": "Entretien ménager" }
+  ]
+}

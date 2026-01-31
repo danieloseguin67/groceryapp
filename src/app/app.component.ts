@@ -37,6 +37,14 @@ export class AppComponent implements OnInit {
   showOnlyUnpicked: boolean = false;
   isAuthenticated: boolean = false;
   isLoginPage: boolean = false;
+  // Language toggle
+  currentLanguage: 'en' | 'fr' = 'en';
+  // Support modal
+  showSupportModal: boolean = false;
+  supportName: string = '';
+  supportPhone: string = '';
+  supportEmail: string = '';
+  supportMessage: string = '';
   
   // Mobile menu
   showMobileMenu: boolean = false;
@@ -81,18 +89,10 @@ export class AppComponent implements OnInit {
   // Expose Math to template
   Math = Math;
   
-  // Category dropdown options
-  categories: string[] = [
-    'Fruits et légumes',
-    'Produits laitiers et œufs',
-    'Garde-Manger',
-    'Boissons',
-    'Viandes et volailles',
-    'Collations',
-    'Produits surgelés',
-    'Pains et pâtisseries',
-    'Entretien ménager'
-  ];
+  // Category dropdown options (loaded from assets/category.json)
+  categories: string[] = [];
+  private categoryJsonPath = 'assets/category.json';
+  private categoryData: Array<{ id: string; en: string; fr: string }> = [];
   
   // Pagination properties
   currentPage: number = 1;
@@ -102,6 +102,8 @@ export class AppComponent implements OnInit {
   // Local JSON file paths
   private localJsonPath = 'assets/grocery-data.json';
   private summariesJsonPath = 'assets/grocery-summaries.json';
+  // Initialization guard to ensure data loads once post-authentication
+  private initialized: boolean = false;
 
   constructor(
     private http: HttpClient, 
@@ -113,6 +115,15 @@ export class AppComponent implements OnInit {
     this.router.events.subscribe(() => {
       this.isLoginPage = this.router.url === '/login';
       this.isAuthenticated = !!localStorage.getItem('customerId');
+
+      // If user just logged in and navigated to main app, initialize data once
+      if (this.isAuthenticated && !this.isLoginPage && !this.initialized) {
+        this.initialized = true;
+        this.loadCategories().then(() => {
+          this.loadJsonData();
+          this.loadSummaries();
+        });
+      }
     });
     
     // Check Google sign-in status
@@ -130,11 +141,70 @@ export class AppComponent implements OnInit {
     }
     
     if (this.isAuthenticated && !this.isLoginPage) {
-      // Authenticated and not on login page, load data
-      this.loadJsonData();
-      this.loadSummaries();
+      // Load categories first (needed for language mapping)
+      this.initialized = true;
+      this.loadCategories().then(() => {
+        // After categories are loaded, proceed with data and summaries
+        this.loadJsonData();
+        this.loadSummaries();
+      });
     }
   }
+  // ==================== Categories & Language ====================
+  async loadCategories(): Promise<void> {
+    return new Promise((resolve) => {
+      this.http.get<{ categories: Array<{ id: string; en: string; fr: string }> }>(this.categoryJsonPath)
+        .subscribe({
+          next: (data) => {
+            this.categoryData = data.categories || [];
+            this.refreshCategoryLabels();
+            resolve();
+          },
+          error: () => {
+            // Fallback to built-in set if asset missing
+            this.categoryData = [
+              { id: 'produce', en: 'Fruits & Vegetables', fr: 'Fruits et légumes' },
+              { id: 'dairy-eggs', en: 'Dairy & Eggs', fr: 'Produits laitiers et œufs' },
+              { id: 'pantry', en: 'Pantry', fr: 'Garde-Manger' },
+              { id: 'beverages', en: 'Beverages', fr: 'Boissons' },
+              { id: 'meat-poultry', en: 'Meat & Poultry', fr: 'Viandes et volailles' },
+              { id: 'snacks', en: 'Snacks', fr: 'Collations' },
+              { id: 'frozen', en: 'Frozen Foods', fr: 'Produits surgelés' },
+              { id: 'bakery', en: 'Bread & Bakery', fr: 'Pains et pâtisseries' },
+              { id: 'household', en: 'Household', fr: 'Entretien ménager' }
+            ];
+            this.refreshCategoryLabels();
+            resolve();
+          }
+        });
+    });
+  }
+
+  private refreshCategoryLabels(): void {
+    this.categories = this.categoryData.map(c => this.currentLanguage === 'en' ? c.en : c.fr);
+  }
+
+  private translateCategoryValue(value: string, targetLang: 'en' | 'fr'): string {
+    const found = this.categoryData.find(c => c.en === value || c.fr === value);
+    if (!found) return value;
+    return targetLang === 'en' ? found.en : found.fr;
+  }
+
+  toggleLanguage(): void {
+    const newLang: 'en' | 'fr' = this.currentLanguage === 'en' ? 'fr' : 'en';
+    this.currentLanguage = newLang;
+    this.refreshCategoryLabels();
+    // Translate existing item categories to the selected language for consistency
+    this.groceryData.forEach(item => {
+      if (item.Category) {
+        item.Category = this.translateCategoryValue(item.Category, newLang);
+      }
+    });
+    // Also update filtered/displayed arrays
+    this.filteredData = [...this.groceryData];
+    this.updatePagination();
+  }
+
 
   logout(): void {
     localStorage.removeItem('customerId');
@@ -268,7 +338,7 @@ export class AppComponent implements OnInit {
   addNewRow(): void {
     const customerId = localStorage.getItem('customerId') || '';
     const newItem: GroceryItem = {
-      Category: 'Fruits et légumes',
+      Category: this.categories[0] || '',
       'Product Name': '',
       Brand: '',
       'Size / Details': '',
@@ -1083,6 +1153,41 @@ export class AppComponent implements OnInit {
     overlay.appendChild(content);
     document.body.appendChild(overlay);
     this.tempAboutOverlay = overlay;
+  }
+
+  // ==================== Support Modal Methods ====================
+
+  onSupportClick(event: MouseEvent): void {
+    // Prevent navigation and stop event from reaching content scripts
+    event.preventDefault();
+    try { (event as any).stopImmediatePropagation?.(); } catch {}
+    event.stopPropagation();
+    this.openSupportModal();
+  }
+
+  openSupportModal(): void {
+    this.showSupportModal = true;
+  }
+
+  closeSupportModal(): void {
+    this.showSupportModal = false;
+  }
+
+  sendSupportEmail(): void {
+    const to = 'daniel@seguin.dev';
+    const subject = encodeURIComponent('Grocery Manager Support');
+    const bodyLines = [
+      `Name: ${this.supportName}`,
+      `Phone: ${this.supportPhone}`,
+      `Email: ${this.supportEmail}`,
+      '',
+      'Message:',
+      this.supportMessage || ''
+    ];
+    const body = encodeURIComponent(bodyLines.join('\n'));
+    const mailto = `mailto:${to}?subject=${subject}&body=${body}`;
+    window.location.href = mailto;
+    this.closeSupportModal();
   }
 }
 
