@@ -240,10 +240,15 @@ export class AppComponent implements OnInit {
   }
 
   openStatistics(): void {
+    console.log('📈 Opening Statistics Modal...');
+    console.log('Before:', this.showStatisticsModal);
     this.showStatisticsModal = true;
+    console.log('After:', this.showStatisticsModal);
+    console.log('Summaries count:', this.grocerySummaries.length);
   }
 
   closeStatisticsModal(): void {
+    console.log('Closing Statistics Modal');
     this.showStatisticsModal = false;
   }
 
