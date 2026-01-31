@@ -329,9 +329,6 @@ export class AppComponent implements OnInit {
       alert('Failed to save summary to browser storage.');
     }
   }
-      alert('Failed to save summary to browser storage.');
-    }
-  }
 
   saveToExcel(): void {
     // Save all data to browser localStorage
