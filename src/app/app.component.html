@@ -260,6 +260,7 @@
                 <th>Estimated Cost</th>
                 <th>Actual Cost</th>
                 <th>Difference</th>
+                <th>Reason</th>
               </tr>
             </thead>
             <tbody>
@@ -272,6 +273,7 @@
                     [class.negative]="summary.actualCost > summary.estimatedCost">
                   ${{ (summary.actualCost - summary.estimatedCost).toFixed(2) }}
                 </td>
+                <td>{{ summary.reason || '' }}</td>
               </tr>
             </tbody>
           </table>
@@ -330,6 +332,10 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <label for="summaryReason">Reason for Difference (optional):</label>
+          <textarea id="summaryReason" [(ngModel)]="summaryReason" class="form-control" rows="2" placeholder="Explain why actual cost differs from estimate..."></textarea>
+        </div>
         <button class="btn btn-primary" (click)="saveSummary()" [disabled]="!summaryDate || summaryActualCost <= 0">
           Add New Summary
         </button>

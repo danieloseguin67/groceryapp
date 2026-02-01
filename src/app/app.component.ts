@@ -20,6 +20,7 @@ interface GrocerySummary {
   estimatedCost: number;
   actualCost: number;
   store: string;
+  reason?: string;
 }
 
 @Component({
@@ -54,6 +55,7 @@ export class AppComponent implements OnInit {
   summaryDate: string = '';
   summaryActualCost: number = 0;
   summaryStore: string = 'Super C';
+  summaryReason: string = '';
   grocerySummaries: GrocerySummary[] = [];
   
   // Statistics Modal
@@ -77,14 +79,7 @@ export class AppComponent implements OnInit {
   driveOperationMessage: string = '';
   
   // Store options
-  stores: string[] = [
-    'Super C',
-    'Metro',
-    'IGA',
-    'Maxi',
-    'Provigo',
-    'Loblaws'
-  ];
+  stores: string[] = [];
   
   // Expose Math to template
   Math = Math;
@@ -92,6 +87,7 @@ export class AppComponent implements OnInit {
   // Category dropdown options (loaded from assets/category.json)
   categories: string[] = [];
   private categoryJsonPath = 'assets/category.json';
+  private storesJsonPath = 'assets/stores.json';
   private categoryData: Array<{ id: string; en: string; fr: string }> = [];
   
   // Pagination properties
@@ -120,8 +116,10 @@ export class AppComponent implements OnInit {
       if (this.isAuthenticated && !this.isLoginPage && !this.initialized) {
         this.initialized = true;
         this.loadCategories().then(() => {
-          this.loadJsonData();
-          this.loadSummaries();
+          this.loadStores().then(() => {
+            this.loadJsonData();
+            this.loadSummaries();
+          });
         });
       }
     });
@@ -139,16 +137,59 @@ export class AppComponent implements OnInit {
       this.router.navigate(['/login']);
       return;
     }
-    
+
     if (this.isAuthenticated && !this.isLoginPage) {
-      // Load categories first (needed for language mapping)
+      // Load categories and stores first
       this.initialized = true;
       this.loadCategories().then(() => {
-        // After categories are loaded, proceed with data and summaries
-        this.loadJsonData();
-        this.loadSummaries();
+        this.loadStores().then(() => {
+          this.loadJsonData();
+          this.loadSummaries();
+        });
       });
     }
+  }
+
+  // Load stores from stores.json
+  loadStores(): Promise<void> {
+    return new Promise((resolve) => {
+      this.http.get<string[]>(this.storesJsonPath)
+        .subscribe({
+          next: (data) => {
+            this.stores = data;
+            resolve();
+          },
+          error: () => {
+            // Fallback to built-in set if asset missing
+            this.stores = [
+              'Super C',
+              'Metro',
+              'IGA',
+              'Maxi',
+              'Provigo',
+              'Loblaws',
+              'Real Canadian Superstore',
+              'No Frills',
+              'Zehrs',
+              'Fortinos',
+              'Food Basics',
+              'Sobeys',
+              'Safeway',
+              'FreshCo',
+              'Save-On-Foods',
+              'Thrifty Foods',
+              'Co-op',
+              'Walmart Supercentre',
+              'Costco Wholesale',
+              'Giant Tiger',
+              'Longo’s',
+              'Farm Boy',
+              'Whole Foods Market'
+            ];
+            resolve();
+          }
+        });
+    });
   }
   // ==================== Categories & Language ====================
   async loadCategories(): Promise<void> {
@@ -642,7 +683,8 @@ export class AppComponent implements OnInit {
       date: this.summaryDate,
       estimatedCost: this.getEstimatedCost(),
       actualCost: this.summaryActualCost,
-      store: this.summaryStore
+      store: this.summaryStore,
+      reason: this.summaryReason
     };
 
     // Add customer_id to the summary
@@ -658,7 +700,7 @@ export class AppComponent implements OnInit {
       console.log('Total summaries now:', this.grocerySummaries.length);
       console.log('Saved data:', this.grocerySummaries);
       console.log('localStorage content:', localStorage.getItem('grocery-summaries'));
-      alert(`✅ Summary saved to browser storage!\n\nDate: ${summary.date}\nStore: ${summary.store}\nEstimated: $${summary.estimatedCost.toFixed(2)}\nActual: $${summary.actualCost.toFixed(2)}\nDifference: $${(summary.actualCost - summary.estimatedCost).toFixed(2)}\n\nYour summary is now saved in browser storage and will appear in Statistics.`);
+      alert(`✅ Summary saved to browser storage!\n\nDate: ${summary.date}\nStore: ${summary.store}\nEstimated: $${summary.estimatedCost.toFixed(2)}\nActual: $${summary.actualCost.toFixed(2)}\nDifference: $${(summary.actualCost - summary.estimatedCost).toFixed(2)}\nReason: ${summary.reason || ''}\n\nYour summary is now saved in browser storage and will appear in Statistics.`);
       this.closeSummaryModal();
     } catch (error) {
       console.error('❌ Error saving summary:', error);
