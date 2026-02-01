@@ -31,6 +31,7 @@ interface GrocerySummary {
 })
 export class AppComponent implements OnInit {
   title = 'Grocery Manager';
+  customerName: string = '';
   groceryData: GroceryItem[] = [];
   filteredData: GroceryItem[] = [];
   displayedData: GroceryItem[] = [];
@@ -115,6 +116,7 @@ export class AppComponent implements OnInit {
       // If user just logged in and navigated to main app, initialize data once
       if (this.isAuthenticated && !this.isLoginPage && !this.initialized) {
         this.initialized = true;
+        this.loadCustomerName();
         this.loadCategories().then(() => {
           this.loadStores().then(() => {
             this.loadJsonData();
@@ -123,7 +125,7 @@ export class AppComponent implements OnInit {
         });
       }
     });
-    
+
     // Check Google sign-in status
     this.isGoogleSignedIn = this.driveService.isSignedIn();
   }
@@ -131,7 +133,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.isAuthenticated = !!localStorage.getItem('customerId');
     this.isLoginPage = this.router.url === '/login';
-    
+
     if (!this.isAuthenticated) {
       // Not authenticated, go to login
       this.router.navigate(['/login']);
@@ -139,6 +141,8 @@ export class AppComponent implements OnInit {
     }
 
     if (this.isAuthenticated && !this.isLoginPage) {
+      // Load customer name
+      this.loadCustomerName();
       // Load categories and stores first
       this.initialized = true;
       this.loadCategories().then(() => {
@@ -148,6 +152,24 @@ export class AppComponent implements OnInit {
         });
       });
     }
+  }
+
+  // Load customer name from customers.json using customerId from localStorage
+  loadCustomerName(): void {
+    const customerId = localStorage.getItem('customerId');
+    if (!customerId) {
+      this.customerName = '';
+      return;
+    }
+    this.http.get<any[]>('assets/customers.json').subscribe({
+      next: (customers) => {
+        const customer = customers.find(c => c.customer_id === customerId);
+        this.customerName = customer ? customer.customer_name : '';
+      },
+      error: () => {
+        this.customerName = '';
+      }
+    });
   }
 
   // Load stores from stores.json

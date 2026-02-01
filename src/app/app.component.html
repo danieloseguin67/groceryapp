@@ -15,6 +15,7 @@
   </div>
 
   <header class="header">
+    <div *ngIf="customerName" style="font-size:1.3em;font-weight:500;margin-bottom:8px;">Hello {{ customerName }}</div>
     <h1>{{ title }}</h1>
     
     <!-- Burger menu icon for mobile -->

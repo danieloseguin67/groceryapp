@@ -1,14 +1,22 @@
 [
   {
    "customer_id": "dos",
-   "apptoken": "Token$1"
+   "apptoken": "Token$1",
+   "customer_name": "Daniel et Nathalie"
   },
   {
    "customer_id": "demo",
-   "apptoken": "demo2026"
+   "apptoken": "demo2026",
+   "customer_name": "Demo Client"
   },
   {
    "customer_id": "freddycook",
-   "apptoken": "Fred2026"
+   "apptoken": "Fred2026",
+   "customer_name": "Frederic Seguin"
+  },
+  {
+   "customer_id": "alexseg",
+   "apptoken": "Alex2026",
+   "customer_name": "Alexandre Seguin"
   }
 ]
