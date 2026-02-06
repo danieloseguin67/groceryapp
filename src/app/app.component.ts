@@ -30,6 +30,12 @@ interface GrocerySummary {
   standalone: false
 })
 export class AppComponent implements OnInit {
+      // Sum the Price column for all items (regardless of checked state)
+      getTotalPriceColumn(): number {
+        return this.groceryData.reduce((total, item) => {
+          return total + item['Price (CAD)'];
+        }, 0);
+      }
     // ...existing code...
 
     // Track sort direction for toggling
