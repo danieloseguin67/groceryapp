@@ -721,6 +721,16 @@ export class AppComponent implements OnInit {
     }, 0);
   }
 
+  // Sort by Category and Product Name (primary: category, secondary: product name)
+  sortByCategoryAndProductName(): void {
+    this.filteredData.sort((a, b) => {
+      const catCmp = (a.Category || '').localeCompare(b.Category || '');
+      if (catCmp !== 0) return catCmp;
+      return (a['Product Name'] || '').localeCompare(b['Product Name'] || '');
+    });
+    this.currentPage = 1;
+    this.updatePagination();
+  }
   // Sort by Category (toggle asc/desc)
   sortByCategory(): void {
     this.filteredData.sort((a, b) => {
