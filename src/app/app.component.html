@@ -138,6 +138,13 @@
       <span class="total-count">
         Total: {{ filteredData.length }} items
       </span>
+        <span class="total-cost" style="margin-left: 2em; font-weight: 500;">
+          Estimated Cost: ${{ getEstimatedCostForDisplayed().toFixed(2) }}
+        </span>
+    </div>
+    <div class="sort-controls" style="margin-top: 8px;">
+      <button class="btn btn-outline-secondary" (click)="sortByCategory()">Sort by Category</button>
+      <button class="btn btn-outline-secondary" (click)="sortByProductName()" style="margin-left: 8px;">Sort by Product Name</button>
     </div>
   </div>
 

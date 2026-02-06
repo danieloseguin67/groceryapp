@@ -30,6 +30,11 @@ interface GrocerySummary {
   standalone: false
 })
 export class AppComponent implements OnInit {
+    // ...existing code...
+
+    // Track sort direction for toggling
+    private sortCategoryAsc: boolean = true;
+    private sortProductNameAsc: boolean = true;
   title = 'Grocery Manager';
   customerName: string = '';
   groceryData: GroceryItem[] = [];
@@ -698,6 +703,38 @@ export class AppComponent implements OnInit {
       }
       return total;
     }, 0);
+  }
+
+  // New: Get estimated cost for currently displayed items (not just picked up)
+  getEstimatedCostForDisplayed(): number {
+    return this.displayedData.reduce((total, item) => {
+      if (item['Picked Up']) {
+        return total + (item['Price (CAD)'] * item.Quantity);
+      }
+      return total;
+    }, 0);
+  }
+
+  // Sort by Category (toggle asc/desc)
+  sortByCategory(): void {
+    this.filteredData.sort((a, b) => {
+      const cmp = (a.Category || '').localeCompare(b.Category || '');
+      return this.sortCategoryAsc ? cmp : -cmp;
+    });
+    this.sortCategoryAsc = !this.sortCategoryAsc;
+    this.currentPage = 1;
+    this.updatePagination();
+  }
+
+  // Sort by Product Name (toggle asc/desc)
+  sortByProductName(): void {
+    this.filteredData.sort((a, b) => {
+      const cmp = (a['Product Name'] || '').localeCompare(b['Product Name'] || '');
+      return this.sortProductNameAsc ? cmp : -cmp;
+    });
+    this.sortProductNameAsc = !this.sortProductNameAsc;
+    this.currentPage = 1;
+    this.updatePagination();
   }
 
   saveSummary(): void {
