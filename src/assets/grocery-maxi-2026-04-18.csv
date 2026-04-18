@@ -1,0 +1,5 @@
+date,estimatedCost,actualCost,store,customer_id,reason
+"2026-01-30",208.69,189.1,"Super C","dos","Used super C reward points"
+"2026-02-05",36,38.01,"Super C","dos","approx. prices"
+"2026-02-13",160.56,196.04,"Maxi","dos",""
+"2026-03-15",152.22,136.89,"Maxi","dos","removed items"

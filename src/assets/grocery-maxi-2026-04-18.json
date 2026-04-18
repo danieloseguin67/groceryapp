@@ -1,0 +1,34 @@
+[
+  {
+    "date": "2026-01-30",
+    "estimatedCost": 208.69,
+    "actualCost": 189.1,
+    "store": "Super C",
+    "customer_id": "dos",
+    "reason": "Used super C reward points"
+  },
+  {
+    "date": "2026-02-05",
+    "estimatedCost": 36,
+    "actualCost": 38.01,
+    "store": "Super C",
+    "reason": "approx. prices",
+    "customer_id": "dos"
+  },
+  {
+    "date": "2026-02-13",
+    "estimatedCost": 160.56,
+    "actualCost": 196.04,
+    "store": "Maxi",
+    "reason": "",
+    "customer_id": "dos"
+  },
+  {
+    "date": "2026-03-15",
+    "estimatedCost": 152.22,
+    "actualCost": 136.89,
+    "store": "Maxi",
+    "reason": "removed items",
+    "customer_id": "dos"
+  }
+]
