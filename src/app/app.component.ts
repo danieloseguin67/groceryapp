@@ -5,6 +5,29 @@ import { GoogleDriveService } from './services/google-drive.service';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
 import { take } from 'rxjs/operators';
 
+const FRENCH_BUTTON_LABELS = {
+  'Add Item': 'Ajouter un article',
+  'Language': 'Langue',
+  'Summary Report': 'Rapport sommaire',
+  'Statistics': 'Statistiques',
+  'Help': 'Aide',
+  'About Solution': 'À propos',
+  'Save': 'Enregistrer',
+  'Download Data': 'Télécharger les données',
+  'Download Summaries': 'Télécharger les rapports',
+  'Upload Data': 'Importer les données',
+  'Upload Summaries': 'Importer les rapports',
+  'Logout': 'Déconnexion',
+  'Sort by Category': 'Trier par catégorie',
+  'Sort by Product Name': 'Trier par nom de produit',
+  'Previous': 'Précédent',
+  'Next': 'Suivant',
+  'Delete': 'Supprimer',
+  'Add New Summary': 'Ajouter un rapport',
+  'Close': 'Fermer',
+  'Send Email': 'Envoyer le courriel'
+} as const;
+
 interface GroceryItem {
   Category: string;
   'Product Name': string;
@@ -52,6 +75,11 @@ export class AppComponent implements OnInit {
   isLoginPage: boolean = false;
   // Language toggle
   currentLanguage: 'en' | 'fr' = 'en';
+
+  buttonLabel(label: keyof typeof FRENCH_BUTTON_LABELS): string {
+    return this.currentLanguage === 'fr' ? FRENCH_BUTTON_LABELS[label] : label;
+  }
+
   // Support modal
   showSupportModal: boolean = false;
   supportName: string = '';
@@ -80,6 +108,12 @@ export class AppComponent implements OnInit {
   // Help Modal
   showHelpModal: boolean = false;
   private tempHelpOverlay?: HTMLElement;
+
+  get helpTitle(): string {
+    return this.currentLanguage === 'fr'
+      ? 'Guide d’aide de Grocery Manager'
+      : 'Grocery Manager Help Guide';
+  }
   
   // About Solution Modal
   showAboutModal: boolean = false;
@@ -676,7 +710,7 @@ export class AppComponent implements OnInit {
     const h2 = document.createElement('h2');
     h2.textContent = 'Grocery Statistics';
     const closeBtn = document.createElement('button');
-    closeBtn.textContent = 'Close';
+    closeBtn.textContent = this.buttonLabel('Close');
     closeBtn.style.marginLeft = '12px';
     closeBtn.addEventListener('click', () => this.closeStatisticsModal());
     header.appendChild(h2);
@@ -1156,31 +1190,56 @@ export class AppComponent implements OnInit {
     header.style.alignItems = 'center';
     header.style.justifyContent = 'space-between';
     const h2 = document.createElement('h2');
-    h2.textContent = 'Grocery Manager Help Guide';
+    h2.textContent = this.helpTitle;
     const closeBtn = document.createElement('button');
-    closeBtn.textContent = 'Close';
+    closeBtn.textContent = this.buttonLabel('Close');
     closeBtn.addEventListener('click', () => this.closeHelpModal());
     header.appendChild(h2);
     header.appendChild(closeBtn);
 
     const body = document.createElement('div');
-    body.innerHTML = `
-      <h3>Workflow Overview</h3>
-      <ol>
-        <li><strong>Add Items:</strong> Use Add Item to add lines with Category, Product Name, Brand, Size/Details, Quantity, Price (CAD). Mark items as Picked Up when bought.</li>
-        <li><strong>Save Locally:</strong> Click Save to store your list in the browser (localStorage).</li>
-        <li><strong>Create Summary:</strong> Click Summary Report, choose Date and Store, Actual Cost from receipt. Estimated Cost is auto-calculated from picked items. Click Add New Summary.</li>
-        <li><strong>Export:</strong> Use Download Data and Download Summaries to save JSON backups.</li>
-        <li><strong>Import on Desktop:</strong> Use Upload Data and Upload Summaries to load files on another device.</li>
-        <li><strong>Statistics:</strong> Click Statistics to view Estimated vs Actual costs by date and store.</li>
-      </ol>
-      <h3>Tips</h3>
+    body.innerHTML = this.currentLanguage === 'en' ? `
+      <h3>Menu Options — English</h3>
       <ul>
-        <li>Save regularly and create a summary after every trip.</li>
-        <li>Use search and filters to manage large lists.</li>
-        <li>Back up with downloads; restore with uploads.</li>
-        <li>Use Google Drive integration for cloud backups, and also to import/export grocery and summary data between your mobile device that you are using at the grocery store and your laptop/desktop at home.</li>
+        <li><strong>Add Item:</strong> Adds a blank row for category, product, brand, size/details, quantity, and CAD price.</li>
+        <li><strong>Language:</strong> Switches button labels, grocery category names, and this help guide between English and French, including the mobile menu, sorting, pagination, and dialog actions. The button shows the current language.</li>
+        <li><strong>Summary Report:</strong> Views saved reports and adds a report with date, store, actual cost, and optional reason. Estimated cost uses picked-up items.</li>
+        <li><strong>Statistics:</strong> Charts estimated and actual costs from saved summaries.</li>
+        <li><strong>Help:</strong> Opens this guide. <strong>About Solution:</strong> Shows app information.</li>
+        <li><strong>Save:</strong> Saves the grocery list in this browser on this device. Reports are saved when added.</li>
+        <li><strong>Download Data / Download Summaries:</strong> Downloads JSON backups of the grocery list and reports.</li>
+        <li><strong>Upload Data / Upload Summaries:</strong> Imports grocery-list or report JSON files.</li>
+        <li><strong>Logout:</strong> Signs out and returns to the login screen. On mobile, open the ☰ menu to access the actions.</li>
       </ul>
+      <h3>Shopping List Controls — English</h3>
+      <ul>
+        <li>Edit item fields directly in the table; mark bought items as Picked Up or delete them with the trash button.</li>
+        <li>Search, filter to show only unpicked items, and sort by category or product name. Click a sort button again to reverse the order.</li>
+        <li>Use Previous and Next to change pages. The totals show matching items, estimated cost for displayed items, and the sum of the Price column across all items regardless of pickup status.</li>
+      </ul>
+      <h3>Backups and Transfers</h3>
+      <p>Browser storage is specific to this device. Download JSON backups regularly and upload them on another device; you can transfer the files using Google Drive.</p>
+    ` : `
+      <h3>Options du menu — Français</h3>
+      <ul>
+        <li><strong>Ajouter un article :</strong> Ajoute une ligne pour la catégorie, le produit, la marque, le format ou les détails, la quantité et le prix en dollars canadiens.</li>
+        <li><strong>Langue :</strong> Change les libellés des boutons, les noms des catégories et ce guide d’aide entre l’anglais et le français, y compris le menu mobile, le tri, la pagination et les actions des fenêtres. Le bouton indique la langue actuelle.</li>
+        <li><strong>Rapport sommaire :</strong> Affiche les rapports enregistrés et permet d’en ajouter un avec la date, le magasin, le coût réel et une raison facultative. Le coût estimé utilise les articles ramassés.</li>
+        <li><strong>Statistiques :</strong> Présente un graphique des coûts estimés et réels des rapports enregistrés.</li>
+        <li><strong>Aide :</strong> Ouvre ce guide. <strong>À propos :</strong> Affiche des renseignements sur l’application.</li>
+        <li><strong>Enregistrer :</strong> Enregistre la liste dans le navigateur de cet appareil. Les rapports sont enregistrés lorsqu’ils sont ajoutés.</li>
+        <li><strong>Télécharger les données / Télécharger les rapports :</strong> Télécharge des sauvegardes JSON de la liste et des rapports.</li>
+        <li><strong>Importer les données / Importer les rapports :</strong> Importe des fichiers JSON de liste ou de rapports.</li>
+        <li><strong>Déconnexion :</strong> Ferme la session et retourne à l’écran de connexion. Sur mobile, ouvrez le menu ☰ pour accéder aux actions.</li>
+      </ul>
+      <h3>Commandes de la liste — Français</h3>
+      <ul>
+        <li>Modifiez les champs directement dans le tableau; cochez Ramassé pour les articles achetés ou utilisez la corbeille pour les supprimer.</li>
+        <li>Recherchez, filtrez pour afficher uniquement les articles non ramassés et triez par catégorie ou nom de produit. Cliquez de nouveau sur un tri pour inverser l’ordre.</li>
+        <li>Utilisez Précédent et Suivant pour changer de page, Ajouter un rapport pour enregistrer un rapport et Fermer pour quitter une fenêtre. Les totaux indiquent les articles correspondants, le coût estimé des articles affichés et la somme de la colonne Prix pour tous les articles, qu’ils soient ramassés ou non.</li>
+      </ul>
+      <h3>Sauvegardes et transfert</h3>
+      <p>Le stockage du navigateur est propre à cet appareil. Téléchargez régulièrement des sauvegardes JSON et importez-les sur un autre appareil; vous pouvez transférer les fichiers avec Google Drive.</p>
     `;
 
     content.appendChild(header);
@@ -1252,7 +1311,7 @@ export class AppComponent implements OnInit {
     const h2 = document.createElement('h2');
     h2.textContent = 'About Solution';
     const closeBtn = document.createElement('button');
-    closeBtn.textContent = 'Close';
+    closeBtn.textContent = this.buttonLabel('Close');
     closeBtn.addEventListener('click', () => this.closeAboutModal());
     header.appendChild(h2);
     header.appendChild(closeBtn);
@@ -1307,4 +1366,3 @@ export class AppComponent implements OnInit {
     this.closeSupportModal();
   }
 }
-

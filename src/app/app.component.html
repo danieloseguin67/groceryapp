@@ -28,40 +28,40 @@
     <!-- Desktop/Tablet buttons -->
     <div class="header-actions">
       <button class="btn btn-success" (click)="addNewRow()">
-        Add Item
+        {{ buttonLabel('Add Item') }}
       </button>
       <button class="btn btn-secondary" (click)="toggleLanguage()">
-        Language: {{ currentLanguage.toUpperCase() }}
+        {{ buttonLabel('Language') }}: {{ currentLanguage.toUpperCase() }}
       </button>
       <button class="btn btn-info" (click)="openSummaryReport()">
-        Summary Report
+        {{ buttonLabel('Summary Report') }}
       </button>
       <button class="btn btn-warning" (click)="openStatisticsModal()">
-        Statistics
+        {{ buttonLabel('Statistics') }}
       </button>
       <button class="btn btn-info" (click)="openHelpModal()">
-        Help
+        {{ buttonLabel('Help') }}
       </button>
       <button class="btn btn-secondary" (click)="openAboutModal()">
-        About Solution
+        {{ buttonLabel('About Solution') }}
       </button>
       <button class="btn btn-primary" (click)="saveToExcel()">
-        Save
+        {{ buttonLabel('Save') }}
       </button>
       <button class="btn btn-primary" (click)="downloadGroceryData()">
-        Download Data
+        {{ buttonLabel('Download Data') }}
       </button>
       <button class="btn btn-primary" (click)="downloadSummaries()">
-        Download Summaries
+        {{ buttonLabel('Download Summaries') }}
       </button>
       <button class="btn btn-success" (click)="uploadGroceryDataFile.click()">
-        Upload Data
+        {{ buttonLabel('Upload Data') }}
       </button>
       <button class="btn btn-success" (click)="uploadSummariesFile.click()">
-        Upload Summaries
+        {{ buttonLabel('Upload Summaries') }}
       </button>
       <button class="btn btn-secondary" (click)="logout()">
-        Logout
+        {{ buttonLabel('Logout') }}
       </button>
     </div>
     
@@ -75,40 +75,40 @@
     <div class="mobile-menu-overlay" (click)="toggleMobileMenu()"></div>
     <div class="mobile-menu-content">
       <button class="mobile-menu-item btn-secondary" (click)="logout(); toggleMobileMenu()">
-        Logout
+        {{ buttonLabel('Logout') }}
       </button>
       <button class="mobile-menu-item btn-success" (click)="addNewRow(); toggleMobileMenu()">
-        Add Item
+        {{ buttonLabel('Add Item') }}
       </button>
       <button class="mobile-menu-item btn-info" (click)="openSummaryReport(); toggleMobileMenu()">
-        Summary Report
+        {{ buttonLabel('Summary Report') }}
       </button>
       <button class="mobile-menu-item btn-secondary" (click)="toggleLanguage(); toggleMobileMenu()">
-        Language: {{ currentLanguage.toUpperCase() }}
+        {{ buttonLabel('Language') }}: {{ currentLanguage.toUpperCase() }}
       </button>
       <button class="mobile-menu-item btn-warning" (click)="openStatisticsModal(); toggleMobileMenu()">
-        Statistics
+        {{ buttonLabel('Statistics') }}
       </button>
       <button class="mobile-menu-item btn-info" (click)="openHelpModal(); toggleMobileMenu()">
-        Help
+        {{ buttonLabel('Help') }}
       </button>
       <button class="mobile-menu-item btn-secondary" (click)="openAboutModal(); toggleMobileMenu()">
-        About Solution
+        {{ buttonLabel('About Solution') }}
       </button>
       <button class="mobile-menu-item btn-primary" (click)="saveToExcel(); toggleMobileMenu()">
-        Save
+        {{ buttonLabel('Save') }}
       </button>
       <button class="mobile-menu-item btn-primary" (click)="downloadGroceryData(); toggleMobileMenu()">
-        Download Data
+        {{ buttonLabel('Download Data') }}
       </button>
       <button class="mobile-menu-item btn-primary" (click)="downloadSummaries(); toggleMobileMenu()">
-        Download Summaries
+        {{ buttonLabel('Download Summaries') }}
       </button>
       <button class="mobile-menu-item btn-success" (click)="uploadGroceryDataFile.click(); toggleMobileMenu()">
-        Upload Data
+        {{ buttonLabel('Upload Data') }}
       </button>
       <button class="mobile-menu-item btn-success" (click)="uploadSummariesFile.click(); toggleMobileMenu()">
-        Upload Summaries
+        {{ buttonLabel('Upload Summaries') }}
       </button>
     </div>
   </div>
@@ -146,8 +146,8 @@
       </span>
     </div>
     <div class="sort-controls" style="margin-top: 8px;">
-      <button class="btn btn-outline-secondary" (click)="sortByCategory()">Sort by Category</button>
-      <button class="btn btn-outline-secondary" (click)="sortByProductName()" style="margin-left: 8px;">Sort by Product Name</button>
+      <button class="btn btn-outline-secondary" (click)="sortByCategory()">{{ buttonLabel('Sort by Category') }}</button>
+      <button class="btn btn-outline-secondary" (click)="sortByProductName()" style="margin-left: 8px;">{{ buttonLabel('Sort by Product Name') }}</button>
     </div>
   </div>
 
@@ -194,7 +194,7 @@
                 <input type="number" [(ngModel)]="item['Price (CAD)']" step="0.01" class="input-field input-number" />
               </td>
               <td class="actions-col">
-                <button class="btn-delete" (click)="deleteRow(item)" title="Delete" aria-label="Delete">
+                <button class="btn-delete" (click)="deleteRow(item)" [title]="buttonLabel('Delete')" [attr.aria-label]="buttonLabel('Delete')">
                   <span class="icon">🗑️</span>
                 </button>
               </td>
@@ -213,7 +213,7 @@
       (click)="previousPage()" 
       [disabled]="currentPage === 1"
     >
-      � Previous
+      {{ buttonLabel('Previous') }}
     </button>
     
     <div class="page-numbers">
@@ -232,7 +232,7 @@
       (click)="nextPage()" 
       [disabled]="currentPage === totalPages"
     >
-      Next �
+      {{ buttonLabel('Next') }}
     </button>
   </div>
 
@@ -249,7 +249,7 @@
   <div class="modal-content modal-large" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h2>Grocery Summary Report</h2>
-      <button class="btn-close" (click)="closeSummaryModal()"></button>
+      <button class="btn-close" (click)="closeSummaryModal()" [attr.aria-label]="buttonLabel('Close')"></button>
     </div>
     
     <div class="modal-body">
@@ -348,13 +348,13 @@
           <textarea id="summaryReason" [(ngModel)]="summaryReason" class="form-control" rows="2" placeholder="Explain why actual cost differs from estimate..."></textarea>
         </div>
         <button class="btn btn-primary" (click)="saveSummary()" [disabled]="!summaryDate || summaryActualCost <= 0">
-          Add New Summary
+          {{ buttonLabel('Add New Summary') }}
         </button>
       </div>
     </div>
 
     <div class="modal-footer">
-      <button class="btn btn-secondary" (click)="closeSummaryModal()">Close</button>
+      <button class="btn btn-secondary" (click)="closeSummaryModal()">{{ buttonLabel('Close') }}</button>
     </div>
   </div>
 </div>
@@ -365,7 +365,7 @@
   <div class="modal-content modal-statistics" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h2>Grocery Statistics</h2>
-      <button class="btn-close" (click)="closeStatisticsModal()"></button>
+      <button class="btn-close" (click)="closeStatisticsModal()" [attr.aria-label]="buttonLabel('Close')"></button>
     </div>
     
     <div class="modal-body">
@@ -380,7 +380,7 @@
     </div>
     
     <div class="modal-footer">
-      <button class="btn btn-secondary" (click)="closeStatisticsModal()">Close</button>
+      <button class="btn btn-secondary" (click)="closeStatisticsModal()">{{ buttonLabel('Close') }}</button>
     </div>
   </div>
 </div>
@@ -389,91 +389,115 @@
 <div class="modal-overlay" *ngIf="showHelpModal" (click)="closeHelpModal()">
   <div class="modal-content modal-large modal-help" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h2>Grocery Manager Help Guide</h2>
-      <button class="btn-close" (click)="closeHelpModal()"></button>
+      <h2>{{ helpTitle }}</h2>
+      <button class="btn-close" (click)="closeHelpModal()" [attr.aria-label]="buttonLabel('Close')"></button>
     </div>
     
     <div class="modal-body">
+      <ng-container *ngIf="currentLanguage === 'en'">
       <div class="help-section">
-        <h3>Buttons Overview</h3>
+        <h3>Menu Options — English</h3>
         <div class="help-content">
           <ul>
-            <li><span class="help-btn">Add Item</span>: Adds a new row to your list so you can enter Category, Product Name, Brand, Size/Details, Quantity, and Price (CAD).</li>
-            <li><span class="help-btn">Summary Report</span>: Opens a modal to view saved summaries and create a new one after a trip (enter Date, Store, and Actual Cost; Estimated Cost is auto-calculated from picked items).</li>
-            <li><span class="help-btn">Statistics</span>: Shows charts comparing Estimated vs Actual costs by date and store (based on your saved summaries).</li>
-            <li><span class="help-btn">Help</span>: Displays this guide.</li>
-            <li><span class="help-btn">About Solution</span>: Shows information about the app.</li>
-            <li><span class="help-btn">Save</span>: Saves your current grocery list to browser storage (localStorage) on this device.</li>
-            <li><span class="help-btn">Download Data</span>: Downloads your grocery list as a JSON file (named with your customer ID and date).</li>
-            <li><span class="help-btn">Download Summaries</span>: Downloads your summaries as a JSON file.</li>
-            <li><span class="help-btn">Upload Data</span>: Loads a previously downloaded grocery data JSON file into the app.</li>
-            <li><span class="help-btn">Upload Summaries</span>: Loads a previously downloaded summaries JSON file into the app.</li>
-            <li><span class="help-btn">Logout</span>: Signs you out and returns to the login screen.</li>
+            <li><span class="help-btn">Add Item</span>: Adds a blank row. Enter the category, product name, brand, size/details, quantity, and price in CAD.</li>
+            <li><span class="help-btn">Language</span>: Switches button labels, grocery category names, and this help guide between English and French, including the mobile menu, sorting, pagination, and dialog actions. The button shows the current language.</li>
+            <li><span class="help-btn">Summary Report</span>: Opens saved shopping summaries and lets you add a report with the shopping date, store, actual cost, and optional reason. Estimated cost is calculated from picked-up items.</li>
+            <li><span class="help-btn">Statistics</span>: Displays a chart comparing estimated and actual costs from saved summaries.</li>
+            <li><span class="help-btn">Help</span>: Opens this guide.</li>
+            <li><span class="help-btn">About Solution</span>: Displays information about Grocery Manager.</li>
+            <li><span class="help-btn">Save</span>: Saves the current grocery list in this browser on this device. Summary reports are saved when you add them.</li>
+            <li><span class="help-btn">Download Data</span>: Downloads the grocery list as a JSON backup file.</li>
+            <li><span class="help-btn">Download Summaries</span>: Downloads saved shopping summaries as a JSON backup file.</li>
+            <li><span class="help-btn">Upload Data</span>: Imports a grocery-list JSON file into the app.</li>
+            <li><span class="help-btn">Upload Summaries</span>: Imports a summaries JSON file into the app.</li>
+            <li><span class="help-btn">Logout</span>: Signs you out and returns to the login screen. On mobile, open the menu with the ☰ button; it contains the same actions except Logout is shown at the top.</li>
           </ul>
         </div>
       </div>
 
       <div class="help-section">
-        <h3>Editing Your List</h3>
+        <h3>Shopping List Controls — English</h3>
         <div class="help-content">
           <ul>
-            <li>Type directly in the table to edit item fields.</li>
-            <li>Use the checkbox in the "Picked Up" column to mark items you’ve bought.</li>
-            <li>Click the trash icon in the "Actions" column to delete an item.</li>
-            <li>Use the search box and the "Show only unpicked items" filter to find and focus on what you still need.</li>
+            <li>Edit category, product name, brand, size/details, quantity, and price directly in the table.</li>
+            <li>Check <strong>Picked Up</strong> for items you have bought. Picked-up items are used to calculate the estimated cost for a summary.</li>
+            <li>Use the trash button in the <strong>Actions</strong> column to delete an item.</li>
+            <li>Search filters the grocery list. Select <strong>Show only unpicked items</strong> to focus on items still needed.</li>
+            <li><strong>Sort by Category</strong> and <strong>Sort by Product Name</strong> sort the list; click again to reverse the order.</li>
+            <li>Use <strong>Previous</strong> and <strong>Next</strong> to move between pages. The page summary shows how many items are displayed.</li>
+            <li>The totals show the number of matching items, the estimated cost for displayed items, and the sum of the Price column across all items, regardless of pickup status.</li>
           </ul>
         </div>
       </div>
 
       <div class="help-section">
-        <h3>Backups and Transfers</h3>
+        <h3>Backups and Transfers — English</h3>
         <div class="help-content">
-          <ul>
-            <li>Click <span class="help-btn">Save</span> to store your list locally in the browser (persists across reloads on the same device).</li>
-            <li>Use <span class="help-btn">Download Data</span> and <span class="help-btn">Download Summaries</span> to create JSON backups.</li>
-            <li>On a new device, use <span class="help-btn">Upload Data</span> and <span class="help-btn">Upload Summaries</span> to restore from those files.</li>
-          </ul>
-          <p>Tip: Install the Google Drive app on your mobile device to easily export and import files between your phone and your laptop/desktop.</p>
-        </div>
-      </div>
-
-      <div class="help-section">
-        <h3>Using Google Drive (Mobile Tip)</h3>
-        <div class="help-content">
-          <p>To make moving files between your computer and phone easier, install the Google Drive app on your mobile device.</p>
+          <p>Use <span class="help-btn">Save</span> to keep the list in the browser on the same device. Browser storage is device-specific and can be cleared, so download JSON backups regularly.</p>
           <ol>
-            <li>On your computer, click <span class="help-btn">Download Data</span> and/or <span class="help-btn">Download Summaries</span>, then upload those JSON files to Google Drive (web).</li>
-            <li>On your phone, open the Google Drive app, download the JSON files to your device.</li>
-            <li>In Grocery Manager on your phone, tap <span class="help-btn">Upload Data</span> and <span class="help-btn">Upload Summaries</span> and select the downloaded files.</li>
+            <li>Download Data and/or Download Summaries on the first device.</li>
+            <li>Move the files to the other device (for example, using Google Drive).</li>
+            <li>Use Upload Data and/or Upload Summaries in Grocery Manager on the other device.</li>
           </ol>
-          <p>This flow simplifies downloading and uploading grocery data and summaries across devices.</p>
+          <p>If an upload fails, confirm that the file is a valid JSON backup from this app. Downloaded files are usually in your browser’s Downloads folder.</p>
+        </div>
+      </div>
+
+      </ng-container>
+      <ng-container *ngIf="currentLanguage === 'fr'">
+      <div class="help-section">
+        <h3>Options du menu — Français</h3>
+        <div class="help-content">
+          <ul>
+            <li><span class="help-btn">Ajouter un article</span> : Ajoute une ligne vide. Saisissez la catégorie, le nom du produit, la marque, le format ou les détails, la quantité et le prix en dollars canadiens.</li>
+            <li><span class="help-btn">Langue</span> : Change les libellés des boutons, les noms des catégories et ce guide d’aide entre l’anglais et le français, y compris le menu mobile, le tri, la pagination et les actions des fenêtres. Le bouton indique la langue actuellement sélectionnée.</li>
+            <li><span class="help-btn">Rapport sommaire</span> : Affiche les rapports d’épicerie enregistrés et permet d’en ajouter un avec la date, le magasin, le coût réel et une raison facultative. Le coût estimé est calculé à partir des articles ramassés.</li>
+            <li><span class="help-btn">Statistiques</span> : Affiche un graphique comparant les coûts estimés et réels des rapports enregistrés.</li>
+            <li><span class="help-btn">Aide</span> : Ouvre ce guide.</li>
+            <li><span class="help-btn">À propos</span> : Affiche des renseignements sur Grocery Manager.</li>
+            <li><span class="help-btn">Enregistrer</span> : Enregistre la liste d’épicerie actuelle dans le navigateur de cet appareil. Les rapports sont enregistrés lorsque vous les ajoutez.</li>
+            <li><span class="help-btn">Télécharger les données</span> : Télécharge la liste d’épicerie dans un fichier de sauvegarde JSON.</li>
+            <li><span class="help-btn">Télécharger les rapports</span> : Télécharge les rapports d’épicerie enregistrés dans un fichier de sauvegarde JSON.</li>
+            <li><span class="help-btn">Importer les données</span> : Importe un fichier JSON de liste d’épicerie dans l’application.</li>
+            <li><span class="help-btn">Importer les rapports</span> : Importe un fichier JSON de rapports dans l’application.</li>
+            <li><span class="help-btn">Déconnexion</span> : Ferme votre session et retourne à l’écran de connexion. Sur mobile, ouvrez le menu avec le bouton ☰; il contient les mêmes actions, sauf que Déconnexion apparaît en haut.</li>
+          </ul>
         </div>
       </div>
 
       <div class="help-section">
-        <h3>Troubleshooting</h3>
+        <h3>Commandes de la liste d’épicerie — Français</h3>
         <div class="help-content">
-          <p><strong>Data not appearing after reload?</strong></p>
           <ul>
-            <li>Ensure you clicked <span class="help-btn">Save</span> after editing.</li>
-            <li>Browser storage is device-specific and can be cleared; keep JSON backups.</li>
-          </ul>
-          <p><strong>Upload not working?</strong></p>
-          <ul>
-            <li>Verify the file is a valid JSON exported from this app.</li>
-            <li>If in doubt, re-download from the original device and try again.</li>
-          </ul>
-          <p><strong>Can't find downloaded files?</strong></p>
-          <ul>
-            <li>Check your browser’s Downloads folder.</li>
-            <li>Files are named like: grocery-data-CUSTOMER123-YYYY-MM-DD.json.</li>
+            <li>Modifiez directement dans le tableau la catégorie, le nom du produit, la marque, le format ou les détails, la quantité et le prix.</li>
+            <li>Cochez <strong>Picked Up (Ramassé)</strong> pour les articles achetés. Les articles cochés servent au calcul du coût estimé d’un rapport.</li>
+            <li>Utilisez le bouton de corbeille dans la colonne <strong>Actions</strong> pour supprimer un article.</li>
+            <li>La recherche filtre la liste. Cochez <strong>Show only unpicked items (Afficher uniquement les articles non ramassés)</strong> pour voir ce qu’il reste à acheter.</li>
+            <li><strong>Trier par catégorie</strong> et <strong>Trier par nom de produit</strong> trient la liste; cliquez de nouveau pour inverser l’ordre.</li>
+            <li>Utilisez <strong>Précédent</strong> et <strong>Suivant</strong> pour changer de page. Le résumé de page indique le nombre d’articles affichés.</li>
+            <li>Dans le rapport sommaire, utilisez <strong>Ajouter un rapport</strong> pour enregistrer un rapport. Utilisez <strong>Fermer</strong> pour quitter une fenêtre et <strong>Envoyer le courriel</strong> dans le formulaire de soutien.</li>
+            <li>Les totaux indiquent le nombre d’articles correspondants, le coût estimé des articles affichés et la somme de la colonne Prix pour tous les articles, qu’ils soient ramassés ou non.</li>
           </ul>
         </div>
       </div>
+
+      <div class="help-section">
+        <h3>Sauvegardes et transfert — Français</h3>
+        <div class="help-content">
+          <p>Utilisez <span class="help-btn">Enregistrer</span> pour conserver la liste dans le navigateur sur le même appareil. Les données du navigateur sont propres à l’appareil et peuvent être effacées; téléchargez donc régulièrement des sauvegardes JSON.</p>
+          <ol>
+            <li>Téléchargez les données et/ou les rapports sur le premier appareil.</li>
+            <li>Transférez les fichiers vers l’autre appareil (par exemple avec Google Drive).</li>
+            <li>Dans Grocery Manager sur l’autre appareil, utilisez Importer les données et/ou Importer les rapports.</li>
+          </ol>
+          <p>Si l’importation échoue, vérifiez que le fichier est une sauvegarde JSON valide créée par cette application. Les fichiers téléchargés se trouvent généralement dans le dossier Téléchargements du navigateur.</p>
+        </div>
+      </div>
+      </ng-container>
     </div>
 
     <div class="modal-footer">
-      <button class="btn btn-primary" (click)="closeHelpModal()">Got it!</button>
+      <button class="btn btn-primary" (click)="closeHelpModal()">{{ buttonLabel('Close') }}</button>
     </div>
   </div>
 </div>
@@ -486,7 +510,7 @@
   <div class="modal-content modal-about" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h2>About Solution</h2>
-      <button class="btn-close" (click)="closeAboutModal()"></button>
+      <button class="btn-close" (click)="closeAboutModal()" [attr.aria-label]="buttonLabel('Close')"></button>
     </div>
     <div class="modal-body">
       <p>
@@ -495,7 +519,7 @@
       </p>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-primary" (click)="closeAboutModal()">Close</button>
+      <button class="btn btn-primary" (click)="closeAboutModal()">{{ buttonLabel('Close') }}</button>
     </div>
   </div>
   
@@ -508,7 +532,7 @@
   <div class="modal-content modal-large" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h2>Support</h2>
-      <button class="btn-close" (click)="closeSupportModal()"></button>
+      <button class="btn-close" (click)="closeSupportModal()" [attr.aria-label]="buttonLabel('Close')"></button>
     </div>
     <div class="modal-body">
       <div class="form-group">
@@ -528,16 +552,12 @@
         <textarea id="supportMessage" [(ngModel)]="supportMessage" rows="5" class="form-control"></textarea>
       </div>
       <button class="btn btn-primary" (click)="sendSupportEmail()" [disabled]="!supportName || !supportEmail || !supportMessage">
-        Send Email
+        {{ buttonLabel('Send Email') }}
       </button>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" (click)="closeSupportModal()">Close</button>
+      <button class="btn btn-secondary" (click)="closeSupportModal()">{{ buttonLabel('Close') }}</button>
     </div>
   </div>
   
 </div>
-
-
-
-
