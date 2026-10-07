@@ -32,10 +32,10 @@ interface GrocerySummary {
   standalone: false
 })
 export class AppComponent implements OnInit, OnDestroy {
-      // Sum the Price column for all items (regardless of checked state)
+      // Sum each item's quantity multiplied by its price, regardless of checked state.
       getTotalPriceColumn(): number {
         return this.groceryData.reduce((total, item) => {
-          return total + item['Price (CAD)'];
+          return total + (item.Quantity * item['Price (CAD)']);
         }, 0);
       }
     // ...existing code...
@@ -760,7 +760,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }, 0);
   }
 
-  // New: Get estimated cost for currently displayed items (not just picked up)
+  // Estimate the cost of picked-up items on the currently displayed page.
   getEstimatedCostForDisplayed(): number {
     return this.displayedData.reduce((total, item) => {
       if (item['Picked Up']) {
@@ -1234,7 +1234,7 @@ export class AppComponent implements OnInit, OnDestroy {
       <ul>
         <li>Edit item fields directly in the table; mark bought items as Picked Up or delete them with the trash button.</li>
         <li>Search, filter to show only unpicked items, and sort by category or product name. Click a sort button again to reverse the order.</li>
-        <li>Use Previous and Next to change pages. The totals show matching items, estimated cost for displayed items, and the sum of the Price column across all items regardless of pickup status.</li>
+        <li>Use Previous and Next to change pages. The estimated cost includes quantity times price only for picked-up items on the displayed page. The price column sum includes quantity times price for all items regardless of pickup status.</li>
       </ul>
       <h3>Backups and Transfers</h3>
       <p>Browser storage is specific to this device. Download JSON backups regularly and upload them on another device; you can transfer the files using Google Drive.</p>
