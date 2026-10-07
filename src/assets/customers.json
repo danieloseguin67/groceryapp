@@ -1,27 +1,27 @@
 [
   {
-   "customer_id": "dos",
-   "apptoken": "Token$1",
-   "customer_name": "Daniel et Nathalie"
+    "customer_id": "dos",
+    "apptoken": "pbkdf2-sha256$600000$2b7ed0ba893bc084c21fafcb92d7e1c4$fe4361601a1e1f771ff144704aff1f20948ca9ce2e44fb18a86dfd3f3e9c3222",
+    "customer_name": "Daniel et Nathalie"
   },
   {
-   "customer_id": "demo",
-   "apptoken": "demo2026",
-   "customer_name": "Demo Client"
+    "customer_id": "demo",
+    "apptoken": "pbkdf2-sha256$600000$f40071922f7a97dd2fae689c216cd84e$4be72d594bb58646a9b28f3d6e616290daccbd394cab311b019401a129f0a5d1",
+    "customer_name": "Demo Client"
   },
   {
-   "customer_id": "freddycook",
-   "apptoken": "Fred2026",
-   "customer_name": "Frederic Seguin"
+    "customer_id": "freddycook",
+    "apptoken": "pbkdf2-sha256$600000$8958c25a188da99a24d8821cc2d5c2df$99a18636f9c97050dbaf82dde6881868d9726a26596dc920a7e6230d8bb8a39b",
+    "customer_name": "Frederic Seguin"
   },
   {
-   "customer_id": "alexseg",
-   "apptoken": "Alex2026",
-   "customer_name": "Alexandre Seguin"
+    "customer_id": "alexseg",
+    "apptoken": "pbkdf2-sha256$600000$4072cbb0de3a4f3a985db42fd2b91612$cbeebf04856778bed9fcc285b34cca7ef9c1af1d4a672a9ac3495f1ba6796c28",
+    "customer_name": "Alexandre Seguin"
   },
   {
-   "customer_id": "sibilarson",
-   "apptoken": "S3b31ar50n",
-   "customer_name": "Sibi Larson"
+    "customer_id": "sibilarson",
+    "apptoken": "pbkdf2-sha256$600000$4b071f046bf696e67206a258fc3ac980$149cf51f7b1670bf258e6593e376df4d4f99fef85340867c3676bbe7ee83cdba",
+    "customer_name": "Sibi Larson"
   }
 ]
