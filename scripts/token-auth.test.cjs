@@ -93,7 +93,7 @@ function loginFixture() {
     setTimeout: callback => callback(),
     console: { error: (...args) => errors.push(args) }
   });
-  const component = new LoginComponent({}, { navigate: url => navigations.push(url) });
+  const component = new LoginComponent({}, { navigate: url => navigations.push(url) }, { text: key => key });
   component.customers = [{ customer_id: 'test', customer_name: 'Test', apptoken: sampleHash }];
   component.customerId = 'test';
   component.appToken = sampleToken;

@@ -1,5 +1,27 @@
 # Assets Folder
 
+## Language Selection
+
+Choose **Language / Langue** on the login screen or in the desktop/mobile menu.
+The selection is saved in this browser and applies to the entire interface:
+login, buttons, table headings, search, reports, statistics, messages, help,
+about, and support. Prices and report dates use Canadian English or French
+formatting. Switching languages keeps active search and pickup filters.
+
+Category labels come from the `en` and `fr` fields in `category.json`; recognized
+categories are converted on load, import, and language changes. Do not rename
+JSON property keys: they remain compatible with existing backups in either
+language. Product names, brands, store names, and customer-entered notes are
+preserved rather than automatically translated. Google file pickers use the
+selected language; Google sign-in screens and native browser dialogs may follow
+the Google account or browser's own language settings.
+
+Choisissez **Langue** sur l’écran de connexion ou dans le menu. Votre choix est
+conservé dans ce navigateur et s’applique à toute l’interface. Les catégories
+utilisent les champs `en` et `fr` de `category.json`. Les noms de produits, les
+marques, les magasins et vos notes restent inchangés; les clés JSON ne changent
+pas, afin de préserver la compatibilité des sauvegardes.
+
 ## Customer Application Tokens
 
 The `apptoken` field in `customers.json` contains a salted PBKDF2-SHA256 hash,

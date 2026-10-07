@@ -1,16 +1,17 @@
 <div class="login-container">
-  <h2>Login</h2>
+  <button type="button" (click)="language.toggle()">{{ t('Language') }}: {{ language.currentLanguage.toUpperCase() }}</button>
+  <h2>{{ t('Login') }}</h2>
   <form (ngSubmit)="onLogin()" #loginForm="ngForm">
     <div>
-      <label for="customerId">Customer ID:</label>
+      <label for="customerId">{{ t('Customer ID') }}:</label>
       <input type="text" id="customerId" name="customerId" [(ngModel)]="customerId" [disabled]="isLoggingIn || loginSuccess" required />
     </div>
     <div>
-      <label for="appToken">Application Token:</label>
+      <label for="appToken">{{ t('Application Token') }}:</label>
       <input type="password" id="appToken" name="appToken" [(ngModel)]="appToken" [disabled]="isLoggingIn || loginSuccess" required />
     </div>
     <div *ngIf="loginError" class="error">{{ loginError }}</div>
-    <div *ngIf="loginSuccess" class="success">Welcome to the Grocery App! Redirecting...</div>
-    <button type="submit" [disabled]="loginForm.invalid || loginSuccess || isLoggingIn">{{ isLoggingIn ? 'Verifying...' : 'Login' }}</button>
+    <div *ngIf="loginSuccess" class="success">{{ t('Welcome to the Grocery App! Redirecting...') }}</div>
+    <button type="submit" [disabled]="loginForm.invalid || loginSuccess || isLoggingIn">{{ t(isLoggingIn ? 'Verifying...' : 'Login') }}</button>
   </form>
 </div>

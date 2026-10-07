@@ -15,11 +15,11 @@
   </div>
 
   <header class="header">
-    <div *ngIf="customerName" style="font-size:1.3em;font-weight:500;margin-bottom:8px;">Hello {{ customerName }}</div>
+    <div *ngIf="customerName" style="font-size:1.3em;font-weight:500;margin-bottom:8px;">{{ t('Hello {name}', { name: customerName }) }}</div>
     <h1>{{ title }}</h1>
     
     <!-- Burger menu icon for mobile -->
-    <button class="burger-menu" (click)="toggleMobileMenu()" aria-label="Menu">
+    <button class="burger-menu" (click)="toggleMobileMenu()" [attr.aria-label]="t('Menu')">
       <span class="burger-line"></span>
       <span class="burger-line"></span>
       <span class="burger-line"></span>
@@ -119,7 +119,7 @@
         type="text" 
         [(ngModel)]="searchTerm" 
         (input)="onSearch()" 
-        placeholder="Search grocery items..."
+        [placeholder]="t('Search grocery items...')"
         class="search-input"
       />
       <span class="search-icon"></span>
@@ -131,18 +131,18 @@
           [(ngModel)]="showOnlyUnpicked"
           (change)="onSearch()"
         />
-        <span>Show only unpicked items</span>
+        <span>{{ t('Show only unpicked items') }}</span>
       </label>
     </div>
     <div class="info">
       <span class="total-count">
-        Total: {{ filteredData.length }} items
+        {{ t('Total: {count} items', { count: filteredData.length }) }}
       </span>
       <span class="total-cost" style="margin-left: 2em; font-weight: 500;">
-        Estimated Cost: ${{ getEstimatedCostForDisplayed().toFixed(2) }}
+        {{ t('Estimated Cost') }}: {{ money(getEstimatedCostForDisplayed()) }}
       </span>
       <span class="total-cost" style="margin-left: 2em; font-weight: 500; color: #059669;">
-        Price Column Sum: ${{ getTotalPriceColumn().toFixed(2) }}
+        {{ t('Price Column Sum') }}: {{ money(getTotalPriceColumn()) }}
       </span>
     </div>
     <div class="sort-controls" style="margin-top: 8px;">
@@ -155,14 +155,14 @@
     <table class="data-table" *ngIf="displayedData.length > 0">
       <thead>
         <tr>
-          <th>Picked Up</th>
-          <th>Category</th>
-          <th>Product Name</th>
-          <th>Brand</th>
-          <th>Size / Details</th>
-          <th>Quantity</th>
-          <th>Price (CAD)</th>
-          <th>Actions</th>
+          <th>{{ t('Picked Up') }}</th>
+          <th>{{ t('Category') }}</th>
+          <th>{{ t('Product Name') }}</th>
+          <th>{{ t('Brand') }}</th>
+          <th>{{ t('Size / Details') }}</th>
+          <th>{{ t('Quantity') }}</th>
+          <th>{{ t('Price (CAD)') }}</th>
+          <th>{{ t('Actions') }}</th>
         </tr>
       </thead>
           <tbody>
@@ -203,7 +203,7 @@
     </table>
 
     <div class="no-data" *ngIf="displayedData.length === 0">
-      <p>No data found</p>
+      <p>{{ t('No data found') }}</p>
     </div>
   </div>
 
@@ -237,9 +237,11 @@
   </div>
 
   <div class="pagination-info">
-    Showing {{ (currentPage - 1) * itemsPerPage + 1 }} - 
-    {{ Math.min(currentPage * itemsPerPage, filteredData.length) }} 
-    of {{ filteredData.length }} items
+    {{ t('Showing {start} - {end} of {count} items', {
+      start: filteredData.length ? (currentPage - 1) * itemsPerPage + 1 : 0,
+      end: Math.min(currentPage * itemsPerPage, filteredData.length),
+      count: filteredData.length
+    }) }}
   </div>
 </div>
 <!-- End of container -->
@@ -248,41 +250,41 @@
 <div class="modal-overlay" *ngIf="showSummaryModal && isAuthenticated" (click)="closeSummaryModal()">
   <div class="modal-content modal-large" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h2>Grocery Summary Report</h2>
+      <h2>{{ t('Grocery Summary Report') }}</h2>
       <button class="btn-close" (click)="closeSummaryModal()" [attr.aria-label]="buttonLabel('Close')"></button>
     </div>
     
     <div class="modal-body">
       <!-- Show message if no summaries -->
       <div *ngIf="grocerySummaries.length === 0" class="no-data-message">
-        <p>No summary data available.</p>
-        <p>Upload a summaries file or create one by clicking the button below.</p>
+        <p>{{ t('No summary data available.') }}</p>
+        <p>{{ t('Upload a summaries file or create one by clicking the button below.') }}</p>
       </div>
 
       <!-- Show list of summaries if available -->
       <div *ngIf="grocerySummaries.length > 0" class="summaries-list">
-        <h3>Saved Summaries ({{ grocerySummaries.length }} total)</h3>
+        <h3>{{ t('Saved Summaries ({count} total)', { count: grocerySummaries.length }) }}</h3>
         <div class="table-container">
           <table class="data-table summary-table">
             <thead>
               <tr>
-                <th>Date</th>
-                <th>Store</th>
-                <th>Estimated Cost</th>
-                <th>Actual Cost</th>
-                <th>Difference</th>
-                <th>Reason</th>
+                <th>{{ t('Date') }}</th>
+                <th>{{ t('Store') }}</th>
+                <th>{{ t('Estimated Cost') }}</th>
+                <th>{{ t('Actual Cost') }}</th>
+                <th>{{ t('Difference') }}</th>
+                <th>{{ t('Reason') }}</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let summary of grocerySummaries">
-                <td>{{ summary.date }}</td>
+                <td>{{ formatDate(summary.date) }}</td>
                 <td>{{ summary.store }}</td>
-                <td>${{ summary.estimatedCost.toFixed(2) }}</td>
-                <td>${{ summary.actualCost.toFixed(2) }}</td>
+                <td>{{ money(summary.estimatedCost) }}</td>
+                <td>{{ money(summary.actualCost) }}</td>
                 <td [class.positive]="summary.actualCost < summary.estimatedCost" 
                     [class.negative]="summary.actualCost > summary.estimatedCost">
-                  ${{ (summary.actualCost - summary.estimatedCost).toFixed(2) }}
+                  {{ money(summary.actualCost - summary.estimatedCost) }}
                 </td>
                 <td>{{ summary.reason || '' }}</td>
               </tr>
@@ -293,16 +295,16 @@
 
       <!-- Form to create new summary -->
       <div class="create-summary-section">
-        <h3>Create New Summary</h3>
+        <h3>{{ t('Create New Summary') }}</h3>
         <div class="summary-info">
           <div class="summary-row">
-            <label>Estimated Cost:</label>
-            <span class="cost-value">${{ getEstimatedCost().toFixed(2) }}</span>
+            <label>{{ t('Estimated Cost') }}:</label>
+            <span class="cost-value">{{ money(getEstimatedCost()) }}</span>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="summaryDate">Date of Grocery Shopping:</label>
+          <label for="summaryDate">{{ t('Date of Grocery Shopping') }}:</label>
           <input 
             type="date" 
             id="summaryDate"
@@ -312,7 +314,7 @@
         </div>
 
         <div class="form-group">
-          <label for="summaryStore">Store:</label>
+          <label for="summaryStore">{{ t('Store') }}:</label>
           <select 
             id="summaryStore"
             [(ngModel)]="summaryStore" 
@@ -323,29 +325,29 @@
         </div>
 
         <div class="form-group">
-          <label for="actualCost">Actual Cost:</label>
+          <label for="actualCost">{{ t('Actual Cost') }}:</label>
           <input 
             type="number" 
             id="actualCost"
             [(ngModel)]="summaryActualCost" 
             step="0.01"
-            placeholder="Enter actual cost"
+            [placeholder]="t('Enter actual cost')"
             class="form-control"
           />
         </div>
 
         <div class="summary-info" *ngIf="summaryActualCost > 0">
           <div class="summary-row">
-            <label>Difference:</label>
+            <label>{{ t('Difference') }}:</label>
             <span class="cost-value" [class.positive]="summaryActualCost < getEstimatedCost()" [class.negative]="summaryActualCost > getEstimatedCost()">
-              ${{ (summaryActualCost - getEstimatedCost()).toFixed(2) }}
+              {{ money(summaryActualCost - getEstimatedCost()) }}
             </span>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="summaryReason">Reason for Difference (optional):</label>
-          <textarea id="summaryReason" [(ngModel)]="summaryReason" class="form-control" rows="2" placeholder="Explain why actual cost differs from estimate..."></textarea>
+          <label for="summaryReason">{{ t('Reason for Difference (optional)') }}:</label>
+          <textarea id="summaryReason" [(ngModel)]="summaryReason" class="form-control" rows="2" [placeholder]="t('Explain why actual cost differs from estimate...')"></textarea>
         </div>
         <button class="btn btn-primary" (click)="saveSummary()" [disabled]="!summaryDate || summaryActualCost <= 0">
           {{ buttonLabel('Add New Summary') }}
@@ -364,14 +366,14 @@
 <div class="modal-overlay" *ngIf="showStatisticsModal" (click)="closeStatisticsModal()">
   <div class="modal-content modal-statistics" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h2>Grocery Statistics</h2>
+      <h2>{{ t('Grocery Statistics') }}</h2>
       <button class="btn-close" (click)="closeStatisticsModal()" [attr.aria-label]="buttonLabel('Close')"></button>
     </div>
     
     <div class="modal-body">
       <div *ngIf="grocerySummaries.length === 0" class="no-data-message">
-        <p>No summary data available yet.</p>
-        <p>Create summaries by clicking the "Summary Report" button after shopping trips.</p>
+        <p>{{ t('No summary data available yet.') }}</p>
+        <p>{{ t('Create summaries by clicking the "Summary Report" button after shopping trips.') }}</p>
       </div>
       
       <div class="chart-container">
@@ -400,7 +402,7 @@
         <div class="help-content">
           <ul>
             <li><span class="help-btn">Add Item</span>: Adds a blank row. Enter the category, product name, brand, size/details, quantity, and price in CAD.</li>
-            <li><span class="help-btn">Language</span>: Switches button labels, grocery category names, and this help guide between English and French, including the mobile menu, sorting, pagination, and dialog actions. The button shows the current language.</li>
+            <li><span class="help-btn">Language</span>: Switches the entire interface and this guide between English and French, including login, forms, messages, and statistics. Your selection is remembered in this browser. Product names, brands, store names, and your notes are not automatically translated.</li>
             <li><span class="help-btn">Summary Report</span>: Opens saved shopping summaries and lets you add a report with the shopping date, store, actual cost, and optional reason. Estimated cost is calculated from picked-up items.</li>
             <li><span class="help-btn">Statistics</span>: Displays a chart comparing estimated and actual costs from saved summaries.</li>
             <li><span class="help-btn">Help</span>: Opens this guide.</li>
@@ -450,7 +452,7 @@
         <div class="help-content">
           <ul>
             <li><span class="help-btn">Ajouter un article</span> : Ajoute une ligne vide. Saisissez la catégorie, le nom du produit, la marque, le format ou les détails, la quantité et le prix en dollars canadiens.</li>
-            <li><span class="help-btn">Langue</span> : Change les libellés des boutons, les noms des catégories et ce guide d’aide entre l’anglais et le français, y compris le menu mobile, le tri, la pagination et les actions des fenêtres. Le bouton indique la langue actuellement sélectionnée.</li>
+            <li><span class="help-btn">Langue</span> : Change toute l’interface et ce guide entre l’anglais et le français, y compris la connexion, les formulaires, les messages et les statistiques. Votre choix est conservé dans ce navigateur. Les noms de produits, les marques, les magasins et vos notes ne sont pas traduits automatiquement.</li>
             <li><span class="help-btn">Rapport sommaire</span> : Affiche les rapports d’épicerie enregistrés et permet d’en ajouter un avec la date, le magasin, le coût réel et une raison facultative. Le coût estimé est calculé à partir des articles ramassés.</li>
             <li><span class="help-btn">Statistiques</span> : Affiche un graphique comparant les coûts estimés et réels des rapports enregistrés.</li>
             <li><span class="help-btn">Aide</span> : Ouvre ce guide.</li>
@@ -470,9 +472,9 @@
         <div class="help-content">
           <ul>
             <li>Modifiez directement dans le tableau la catégorie, le nom du produit, la marque, le format ou les détails, la quantité et le prix.</li>
-            <li>Cochez <strong>Picked Up (Ramassé)</strong> pour les articles achetés. Les articles cochés servent au calcul du coût estimé d’un rapport.</li>
+            <li>Cochez <strong>Ramassé</strong> pour les articles achetés. Les articles cochés servent au calcul du coût estimé d’un rapport.</li>
             <li>Utilisez le bouton de corbeille dans la colonne <strong>Actions</strong> pour supprimer un article.</li>
-            <li>La recherche filtre la liste. Cochez <strong>Show only unpicked items (Afficher uniquement les articles non ramassés)</strong> pour voir ce qu’il reste à acheter.</li>
+            <li>La recherche filtre la liste. Cochez <strong>Afficher uniquement les articles non ramassés</strong> pour voir ce qu’il reste à acheter.</li>
             <li><strong>Trier par catégorie</strong> et <strong>Trier par nom de produit</strong> trient la liste; cliquez de nouveau pour inverser l’ordre.</li>
             <li>Utilisez <strong>Précédent</strong> et <strong>Suivant</strong> pour changer de page. Le résumé de page indique le nombre d’articles affichés.</li>
             <li>Dans le rapport sommaire, utilisez <strong>Ajouter un rapport</strong> pour enregistrer un rapport. Utilisez <strong>Fermer</strong> pour quitter une fenêtre et <strong>Envoyer le courriel</strong> dans le formulaire de soutien.</li>
@@ -509,13 +511,12 @@
 <div class="modal-overlay" *ngIf="showAboutModal" (click)="closeAboutModal()">
   <div class="modal-content modal-about" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h2>About Solution</h2>
+      <h2>{{ t('About Solution') }}</h2>
       <button class="btn-close" (click)="closeAboutModal()" [attr.aria-label]="buttonLabel('Close')"></button>
     </div>
     <div class="modal-body">
       <p>
-        Grocery Manager was developed by <strong>Daniel Seguin</strong> of <strong>SeguinDev</strong>
-        in January 2026.
+        {{ t('Grocery Manager was developed by Daniel Seguin of SeguinDev in January 2026.') }}
       </p>
     </div>
     <div class="modal-footer">
@@ -531,24 +532,24 @@
 <div class="modal-overlay" *ngIf="showSupportModal" (click)="closeSupportModal()">
   <div class="modal-content modal-large" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h2>Support</h2>
+      <h2>{{ t('Support') }}</h2>
       <button class="btn-close" (click)="closeSupportModal()" [attr.aria-label]="buttonLabel('Close')"></button>
     </div>
     <div class="modal-body">
       <div class="form-group">
-        <label for="supportName">Your Name</label>
+        <label for="supportName">{{ t('Your Name') }}</label>
         <input id="supportName" type="text" [(ngModel)]="supportName" class="form-control" />
       </div>
       <div class="form-group">
-        <label for="supportPhone">Phone</label>
+        <label for="supportPhone">{{ t('Phone') }}</label>
         <input id="supportPhone" type="text" [(ngModel)]="supportPhone" class="form-control" />
       </div>
       <div class="form-group">
-        <label for="supportEmail">Email</label>
+        <label for="supportEmail">{{ t('Email') }}</label>
         <input id="supportEmail" type="email" [(ngModel)]="supportEmail" class="form-control" />
       </div>
       <div class="form-group">
-        <label for="supportMessage">Message</label>
+        <label for="supportMessage">{{ t('Message') }}</label>
         <textarea id="supportMessage" [(ngModel)]="supportMessage" rows="5" class="form-control"></textarea>
       </div>
       <button class="btn btn-primary" (click)="sendSupportEmail()" [disabled]="!supportName || !supportEmail || !supportMessage">

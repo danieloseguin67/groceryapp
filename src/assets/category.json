@@ -8,6 +8,8 @@
     { "id": "snacks", "en": "Snacks", "fr": "Collations" },
     { "id": "frozen", "en": "Frozen Foods", "fr": "Produits surgelés" },
     { "id": "bakery", "en": "Bread & Bakery", "fr": "Pains et pâtisseries" },
-    { "id": "household", "en": "Household", "fr": "Entretien ménager" }
+    { "id": "household", "en": "Household", "fr": "Entretien ménager" },
+    { "id": "pharmacy", "en": "Pharmacy", "fr": "Pharmacie" },
+    { "id": "seasonal", "en": "Seasonal", "fr": "Saisonier" }
   ]
 }

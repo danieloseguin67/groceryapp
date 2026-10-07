@@ -1,32 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef, AfterViewInit, ViewChild, ElementRef, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, AfterViewInit, ViewChild, ElementRef, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { GoogleDriveService } from './services/google-drive.service';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
 import { take } from 'rxjs/operators';
-
-const FRENCH_BUTTON_LABELS = {
-  'Add Item': 'Ajouter un article',
-  'Language': 'Langue',
-  'Summary Report': 'Rapport sommaire',
-  'Statistics': 'Statistiques',
-  'Help': 'Aide',
-  'About Solution': 'À propos',
-  'Save': 'Enregistrer',
-  'Download Data': 'Télécharger les données',
-  'Download Summaries': 'Télécharger les rapports',
-  'Upload Data': 'Importer les données',
-  'Upload Summaries': 'Importer les rapports',
-  'Logout': 'Déconnexion',
-  'Sort by Category': 'Trier par catégorie',
-  'Sort by Product Name': 'Trier par nom de produit',
-  'Previous': 'Précédent',
-  'Next': 'Suivant',
-  'Delete': 'Supprimer',
-  'Add New Summary': 'Ajouter un rapport',
-  'Close': 'Fermer',
-  'Send Email': 'Envoyer le courriel'
-} as const;
+import { Subscription } from 'rxjs';
+import { LanguageService, TextKey, TextParams } from './services/language.service';
 
 interface GroceryItem {
   Category: string;
@@ -52,7 +31,7 @@ interface GrocerySummary {
   styleUrls: ['./app.component.css'],
   standalone: false
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
       // Sum the Price column for all items (regardless of checked state)
       getTotalPriceColumn(): number {
         return this.groceryData.reduce((total, item) => {
@@ -64,7 +43,7 @@ export class AppComponent implements OnInit {
     // Track sort direction for toggling
     private sortCategoryAsc: boolean = true;
     private sortProductNameAsc: boolean = true;
-  title = 'Grocery Manager';
+  get title(): string { return this.t('Grocery Manager'); }
   customerName: string = '';
   groceryData: GroceryItem[] = [];
   filteredData: GroceryItem[] = [];
@@ -74,11 +53,16 @@ export class AppComponent implements OnInit {
   isAuthenticated: boolean = false;
   isLoginPage: boolean = false;
   // Language toggle
-  currentLanguage: 'en' | 'fr' = 'en';
+  get currentLanguage(): 'en' | 'fr' { return this.language.currentLanguage; }
+  private languageSubscription: Subscription;
 
-  buttonLabel(label: keyof typeof FRENCH_BUTTON_LABELS): string {
-    return this.currentLanguage === 'fr' ? FRENCH_BUTTON_LABELS[label] : label;
+  t(key: TextKey, params: TextParams = {}): string {
+    return this.language.text(key, params);
   }
+
+  buttonLabel(label: TextKey): string { return this.t(label); }
+  money(value: number): string { return this.language.currency(value); }
+  formatDate(value: string): string { return this.language.date(value); }
 
   // Support modal
   showSupportModal: boolean = false;
@@ -110,9 +94,7 @@ export class AppComponent implements OnInit {
   private tempHelpOverlay?: HTMLElement;
 
   get helpTitle(): string {
-    return this.currentLanguage === 'fr'
-      ? 'Guide d’aide de Grocery Manager'
-      : 'Grocery Manager Help Guide';
+    return this.t('Grocery Manager Help Guide');
   }
   
   // About Solution Modal
@@ -122,7 +104,15 @@ export class AppComponent implements OnInit {
   // Google Drive Integration
   isGoogleSignedIn: boolean = false;
   isLoadingDrive: boolean = false;
-  driveOperationMessage: string = '';
+  private driveMessageKey: TextKey | '' = '';
+  private driveMessageParams: TextParams = {};
+  get driveOperationMessage(): string {
+    return this.driveMessageKey ? this.t(this.driveMessageKey, this.driveMessageParams) : '';
+  }
+  private setDriveMessage(key: TextKey | '', params: TextParams = {}): void {
+    this.driveMessageKey = key;
+    this.driveMessageParams = params;
+  }
   
   // Store options
   stores: string[] = [];
@@ -152,8 +142,33 @@ export class AppComponent implements OnInit {
     private router: Router,
     private driveService: GoogleDriveService,
     private cdr: ChangeDetectorRef,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    public language: LanguageService
   ) {
+    this.languageSubscription = this.language.changes.subscribe(() => {
+      this.refreshCategoryLabels();
+      this.normalizeCategories();
+      const page = this.currentPage;
+      this.onSearch();
+      this.currentPage = Math.min(page, Math.max(1, this.totalPages));
+      this.updatePagination();
+      if (this.tempHelpOverlay) {
+        this.tempHelpOverlay.remove();
+        this.tempHelpOverlay = undefined;
+        this.createTemporaryHelpOverlay();
+      }
+      if (this.tempAboutOverlay) {
+        this.tempAboutOverlay.remove();
+        this.tempAboutOverlay = undefined;
+        this.createTemporaryAboutOverlay();
+      }
+      if (this.tempStatsOverlay) {
+        this.tempStatsOverlay.remove();
+        this.tempStatsOverlay = undefined;
+        this.createTemporaryStatisticsOverlay();
+      }
+      if (this.showStatisticsModal) this.createStatisticsChart();
+    });
     this.router.events.subscribe(() => {
       this.isLoginPage = this.router.url === '/login';
       this.isAuthenticated = !!localStorage.getItem('customerId');
@@ -173,6 +188,11 @@ export class AppComponent implements OnInit {
 
     // Check Google sign-in status
     this.isGoogleSignedIn = this.driveService.isSignedIn();
+  }
+
+  ngOnDestroy(): void {
+    this.languageSubscription.unsubscribe();
+    this.statisticsChart?.destroy();
   }
 
   ngOnInit(): void {
@@ -292,6 +312,12 @@ export class AppComponent implements OnInit {
     this.categories = this.categoryData.map(c => this.currentLanguage === 'en' ? c.en : c.fr);
   }
 
+  private normalizeCategories(): void {
+    this.groceryData.forEach(item => {
+      item.Category = this.translateCategoryValue(item.Category, this.currentLanguage);
+    });
+  }
+
   private translateCategoryValue(value: string, targetLang: 'en' | 'fr'): string {
     const found = this.categoryData.find(c => c.en === value || c.fr === value);
     if (!found) return value;
@@ -299,18 +325,7 @@ export class AppComponent implements OnInit {
   }
 
   toggleLanguage(): void {
-    const newLang: 'en' | 'fr' = this.currentLanguage === 'en' ? 'fr' : 'en';
-    this.currentLanguage = newLang;
-    this.refreshCategoryLabels();
-    // Translate existing item categories to the selected language for consistency
-    this.groceryData.forEach(item => {
-      if (item.Category) {
-        item.Category = this.translateCategoryValue(item.Category, newLang);
-      }
-    });
-    // Also update filtered/displayed arrays
-    this.filteredData = [...this.groceryData];
-    this.updatePagination();
+    this.language.toggle();
   }
 
 
@@ -337,7 +352,7 @@ export class AppComponent implements OnInit {
           },
           error: (error) => {
             console.error('❌ Error loading JSON file:', error);
-            alert('JSON file not found in assets folder.\n\nPlease ensure grocery-data.json exists in src/assets/ folder');
+            alert(this.t('JSON file not found in assets folder.\n\nPlease ensure grocery-data.json exists in src/assets/ folder'));
           }
         });
     }
@@ -381,8 +396,8 @@ export class AppComponent implements OnInit {
       this.groceryData = jsonData;
     }
     
-    this.filteredData = [...this.groceryData];
-    this.updatePagination();
+    this.normalizeCategories();
+    this.onSearch();
   }
 
   onSearch(): void {
@@ -469,7 +484,7 @@ export class AppComponent implements OnInit {
   }
 
   deleteRow(item: GroceryItem): void {
-    if (confirm('Are you sure you want to delete this item?')) {
+    if (confirm(this.t('Are you sure you want to delete this item?'))) {
       const index = this.groceryData.indexOf(item);
       if (index > -1) {
         this.groceryData.splice(index, 1);
@@ -593,7 +608,7 @@ export class AppComponent implements OnInit {
       
       // Estimated cost dataset for this store
       datasets.push({
-        label: `${store} - Estimated`,
+        label: `${store} - ${this.t('Estimated')}`,
         data: dates.map(date => dataByDate[date][store]?.estimated || 0),
         backgroundColor: colorSet.estimated,
         borderColor: colorSet.estimated.replace('0.6', '1'),
@@ -602,7 +617,7 @@ export class AppComponent implements OnInit {
       
       // Actual cost dataset for this store
       datasets.push({
-        label: `${store} - Actual`,
+        label: `${store} - ${this.t('Actual')}`,
         data: dates.map(date => dataByDate[date][store]?.actual || 0),
         backgroundColor: colorSet.actual,
         borderColor: colorSet.actual.replace('0.6', '1'),
@@ -614,7 +629,7 @@ export class AppComponent implements OnInit {
     const config: ChartConfiguration = {
       type: 'bar',
       data: {
-        labels: dates,
+        labels: dates.map(date => this.formatDate(date)),
         datasets: datasets
       },
       options: {
@@ -623,7 +638,7 @@ export class AppComponent implements OnInit {
         plugins: {
           title: {
             display: true,
-            text: 'Grocery Costs: Estimated vs Actual by Date and Store',
+            text: this.t('Grocery Costs: Estimated vs Actual by Date and Store'),
             font: {
               size: 16
             }
@@ -636,13 +651,13 @@ export class AppComponent implements OnInit {
             mode: 'index',
             intersect: false,
             callbacks: {
-              label: function(context: any) {
+              label: (context) => {
                 let label = context.dataset.label || '';
                 if (label) {
                   label += ': ';
                 }
                 if (context.parsed && context.parsed.y !== null && context.parsed.y !== undefined) {
-                  label += '$' + context.parsed.y.toFixed(2);
+                  label += this.money(context.parsed.y);
                 }
                 return label;
               }
@@ -653,18 +668,18 @@ export class AppComponent implements OnInit {
           x: {
             title: {
               display: true,
-              text: 'Date'
+              text: this.t('Date')
             }
           },
           y: {
             title: {
               display: true,
-              text: 'Cost (CAD)'
+              text: this.t('Cost (CAD)')
             },
             beginAtZero: true,
             ticks: {
-              callback: function(value) {
-                return '$' + value;
+              callback: (value) => {
+                return this.money(Number(value));
               }
             }
           }
@@ -708,7 +723,7 @@ export class AppComponent implements OnInit {
     header.style.alignItems = 'center';
     header.style.justifyContent = 'space-between';
     const h2 = document.createElement('h2');
-    h2.textContent = 'Grocery Statistics';
+    h2.textContent = this.t('Grocery Statistics');
     const closeBtn = document.createElement('button');
     closeBtn.textContent = this.buttonLabel('Close');
     closeBtn.style.marginLeft = '12px';
@@ -758,9 +773,9 @@ export class AppComponent implements OnInit {
   // Sort by Category and Product Name (primary: category, secondary: product name)
   sortByCategoryAndProductName(): void {
     this.filteredData.sort((a, b) => {
-      const catCmp = (a.Category || '').localeCompare(b.Category || '');
+      const catCmp = (a.Category || '').localeCompare(b.Category || '', this.language.locale);
       if (catCmp !== 0) return catCmp;
-      return (a['Product Name'] || '').localeCompare(b['Product Name'] || '');
+      return (a['Product Name'] || '').localeCompare(b['Product Name'] || '', this.language.locale);
     });
     this.currentPage = 1;
     this.updatePagination();
@@ -768,7 +783,7 @@ export class AppComponent implements OnInit {
   // Sort by Category (toggle asc/desc)
   sortByCategory(): void {
     this.filteredData.sort((a, b) => {
-      const cmp = (a.Category || '').localeCompare(b.Category || '');
+      const cmp = (a.Category || '').localeCompare(b.Category || '', this.language.locale);
       return this.sortCategoryAsc ? cmp : -cmp;
     });
     this.sortCategoryAsc = !this.sortCategoryAsc;
@@ -779,7 +794,7 @@ export class AppComponent implements OnInit {
   // Sort by Product Name (toggle asc/desc)
   sortByProductName(): void {
     this.filteredData.sort((a, b) => {
-      const cmp = (a['Product Name'] || '').localeCompare(b['Product Name'] || '');
+      const cmp = (a['Product Name'] || '').localeCompare(b['Product Name'] || '', this.language.locale);
       return this.sortProductNameAsc ? cmp : -cmp;
     });
     this.sortProductNameAsc = !this.sortProductNameAsc;
@@ -809,11 +824,15 @@ export class AppComponent implements OnInit {
       console.log('Total summaries now:', this.grocerySummaries.length);
       console.log('Saved data:', this.grocerySummaries);
       console.log('localStorage content:', localStorage.getItem('grocery-summaries'));
-      alert(`✅ Summary saved to browser storage!\n\nDate: ${summary.date}\nStore: ${summary.store}\nEstimated: $${summary.estimatedCost.toFixed(2)}\nActual: $${summary.actualCost.toFixed(2)}\nDifference: $${(summary.actualCost - summary.estimatedCost).toFixed(2)}\nReason: ${summary.reason || ''}\n\nYour summary is now saved in browser storage and will appear in Statistics.`);
+      alert(this.t('Summary saved to browser storage!\n\nDate: {date}\nStore: {store}\nEstimated: {estimated}\nActual: {actual}\nDifference: {difference}\nReason: {reason}\n\nYour summary is now saved in browser storage and will appear in Statistics.', {
+        date: this.formatDate(summary.date), store: summary.store,
+        estimated: this.money(summary.estimatedCost), actual: this.money(summary.actualCost),
+        difference: this.money(summary.actualCost - summary.estimatedCost), reason: summary.reason || ''
+      }));
       this.closeSummaryModal();
     } catch (error) {
       console.error('❌ Error saving summary:', error);
-      alert('Failed to save summary to browser storage.');
+      alert(this.t('Failed to save summary to browser storage.'));
     }
   }
 
@@ -822,10 +841,10 @@ export class AppComponent implements OnInit {
     try {
       localStorage.setItem('grocery-data', JSON.stringify(this.groceryData));
       console.log('✅ Data saved successfully to browser storage');
-      alert('Data saved successfully to browser storage!');
+      alert(this.t('Data saved successfully to browser storage!'));
     } catch (error) {
       console.error('❌ Error saving data:', error);
-      alert('Failed to save data to browser storage.');
+      alert(this.t('Failed to save data to browser storage.'));
     }
   }
 
@@ -843,7 +862,7 @@ export class AppComponent implements OnInit {
       console.log('✅ Grocery data downloaded successfully');
     } catch (error) {
       console.error('❌ Error downloading grocery data:', error);
-      alert('Failed to download grocery data.');
+      alert(this.t('Failed to download grocery data.'));
     }
   }
 
@@ -861,7 +880,7 @@ export class AppComponent implements OnInit {
       console.log('✅ Grocery summaries downloaded successfully');
     } catch (error) {
       console.error('❌ Error downloading summaries:', error);
-      alert('Failed to download summaries.');
+      alert(this.t('Failed to download summaries.'));
     }
   }
 
@@ -874,27 +893,27 @@ export class AppComponent implements OnInit {
   async signInToGoogle(): Promise<void> {
     try {
       this.isLoadingDrive = true;
-      this.driveOperationMessage = 'Signing in to Google...';
+      this.setDriveMessage('Signing in to Google...');
       await this.driveService.authenticate();
       this.isGoogleSignedIn = true;
-      this.driveOperationMessage = '✅ Successfully signed in to Google Drive';
-      setTimeout(() => this.driveOperationMessage = '', 3000);
+      this.setDriveMessage('Successfully signed in to Google Drive');
+      setTimeout(() => this.setDriveMessage(''), 3000);
     } catch (error: any) {
       console.error('❌ Google sign-in failed:', error);
       
       // Show user-friendly error message
-      let errorMessage = '❌ Sign-in failed. ';
+      let errorKey: TextKey;
       if (error?.message?.includes('not configured')) {
-        errorMessage += 'Google Drive is not set up. See QUICK_START.md for setup instructions.';
+        errorKey = 'Sign-in failed. Google Drive is not set up. See QUICK_START.md for setup instructions.';
       } else if (error?.message?.includes('not loaded')) {
-        errorMessage += 'Google API could not be loaded. Please refresh the page.';
+        errorKey = 'Sign-in failed. Google API could not be loaded. Please refresh the page.';
       } else {
-        errorMessage += 'Please check your internet connection and try again.';
+        errorKey = 'Sign-in failed. Please check your internet connection and try again.';
       }
       
-      this.driveOperationMessage = errorMessage;
-      alert(errorMessage);
-      setTimeout(() => this.driveOperationMessage = '', 8000);
+      this.setDriveMessage(errorKey);
+      alert(this.t(errorKey));
+      setTimeout(() => this.setDriveMessage(''), 8000);
     } finally {
       this.isLoadingDrive = false;
     }
@@ -903,8 +922,8 @@ export class AppComponent implements OnInit {
   signOutFromGoogle(): void {
     this.driveService.signOut();
     this.isGoogleSignedIn = false;
-    this.driveOperationMessage = '✅ Signed out from Google Drive';
-    setTimeout(() => this.driveOperationMessage = '', 3000);
+    this.setDriveMessage('Signed out from Google Drive');
+    setTimeout(() => this.setDriveMessage(''), 3000);
   }
 
   async saveGroceryDataToDrive(): Promise<void> {
@@ -915,30 +934,30 @@ export class AppComponent implements OnInit {
       }
 
       this.isLoadingDrive = true;
-      this.driveOperationMessage = 'Opening folder picker...';
+      this.setDriveMessage('Opening folder picker...');
 
       // Get or create GroceryManager folder
       const folderId = await this.driveService.getOrCreateGroceryManagerFolder();
       
       if (!folderId) {
-        this.driveOperationMessage = '❌ Folder selection cancelled';
-        setTimeout(() => this.driveOperationMessage = '', 3000);
+        this.setDriveMessage('Folder selection cancelled');
+        setTimeout(() => this.setDriveMessage(''), 3000);
         return;
       }
 
-      this.driveOperationMessage = 'Uploading grocery data...';
+      this.setDriveMessage('Uploading grocery data...');
       const customerId = localStorage.getItem('customerId') || 'user';
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-').split('T')[0];
       const filename = `grocery-data-${customerId}-${timestamp}.json`;
 
       await this.driveService.uploadJsonFile(folderId, filename, this.groceryData);
       
-      this.driveOperationMessage = `✅ Grocery data saved to Drive: ${filename}`;
-      setTimeout(() => this.driveOperationMessage = '', 5000);
+      this.setDriveMessage('Grocery data saved to Drive: {file}', { file: filename });
+      setTimeout(() => this.setDriveMessage(''), 5000);
     } catch (error) {
       console.error('❌ Error saving to Drive:', error);
-      this.driveOperationMessage = '❌ Failed to save to Drive. Please try again.';
-      setTimeout(() => this.driveOperationMessage = '', 5000);
+      this.setDriveMessage('Failed to save to Drive. Please try again.');
+      setTimeout(() => this.setDriveMessage(''), 5000);
     } finally {
       this.isLoadingDrive = false;
     }
@@ -952,30 +971,30 @@ export class AppComponent implements OnInit {
       }
 
       this.isLoadingDrive = true;
-      this.driveOperationMessage = 'Opening folder picker...';
+      this.setDriveMessage('Opening folder picker...');
 
       // Get or create GroceryManager folder
       const folderId = await this.driveService.getOrCreateGroceryManagerFolder();
       
       if (!folderId) {
-        this.driveOperationMessage = '❌ Folder selection cancelled';
-        setTimeout(() => this.driveOperationMessage = '', 3000);
+        this.setDriveMessage('Folder selection cancelled');
+        setTimeout(() => this.setDriveMessage(''), 3000);
         return;
       }
 
-      this.driveOperationMessage = 'Uploading summaries...';
+      this.setDriveMessage('Uploading summaries...');
       const customerId = localStorage.getItem('customerId') || 'user';
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-').split('T')[0];
       const filename = `grocery-summaries-${customerId}-${timestamp}.json`;
 
       await this.driveService.uploadJsonFile(folderId, filename, this.grocerySummaries);
       
-      this.driveOperationMessage = `✅ Summaries saved to Drive: ${filename}`;
-      setTimeout(() => this.driveOperationMessage = '', 5000);
+      this.setDriveMessage('Summaries saved to Drive: {file}', { file: filename });
+      setTimeout(() => this.setDriveMessage(''), 5000);
     } catch (error) {
       console.error('❌ Error saving to Drive:', error);
-      this.driveOperationMessage = '❌ Failed to save to Drive. Please try again.';
-      setTimeout(() => this.driveOperationMessage = '', 5000);
+      this.setDriveMessage('Failed to save to Drive. Please try again.');
+      setTimeout(() => this.setDriveMessage(''), 5000);
     } finally {
       this.isLoadingDrive = false;
     }
@@ -989,37 +1008,37 @@ export class AppComponent implements OnInit {
       }
 
       this.isLoadingDrive = true;
-      this.driveOperationMessage = 'Opening file picker...';
+      this.setDriveMessage('Opening file picker...');
 
       const files = await this.driveService.openFilePicker('application/json');
       
       if (!files || files.length === 0) {
-        this.driveOperationMessage = '❌ No file selected';
-        setTimeout(() => this.driveOperationMessage = '', 3000);
+        this.setDriveMessage('No file selected');
+        setTimeout(() => this.setDriveMessage(''), 3000);
         return;
       }
 
-      this.driveOperationMessage = 'Downloading grocery data...';
+      this.setDriveMessage('Downloading grocery data...');
       const fileData = await this.driveService.downloadJsonFile(files[0].id);
       
       // Validate and load data
       if (Array.isArray(fileData)) {
         this.groceryData = fileData;
-        this.filteredData = [...this.groceryData];
-        this.updatePagination();
+        this.normalizeCategories();
+        this.onSearch();
         
         // Save to localStorage as well
         localStorage.setItem('grocery-data', JSON.stringify(this.groceryData));
         
-        this.driveOperationMessage = `✅ Loaded ${fileData.length} items from Drive`;
-        setTimeout(() => this.driveOperationMessage = '', 5000);
+        this.setDriveMessage('Loaded {count} items from Drive', { count: fileData.length });
+        setTimeout(() => this.setDriveMessage(''), 5000);
       } else {
         throw new Error('Invalid grocery data format');
       }
     } catch (error) {
       console.error('❌ Error loading from Drive:', error);
-      this.driveOperationMessage = '❌ Failed to load from Drive. Please try again.';
-      setTimeout(() => this.driveOperationMessage = '', 5000);
+      this.setDriveMessage('Failed to load from Drive. Please try again.');
+      setTimeout(() => this.setDriveMessage(''), 5000);
     } finally {
       this.isLoadingDrive = false;
     }
@@ -1033,17 +1052,17 @@ export class AppComponent implements OnInit {
       }
 
       this.isLoadingDrive = true;
-      this.driveOperationMessage = 'Opening file picker...';
+      this.setDriveMessage('Opening file picker...');
 
       const files = await this.driveService.openFilePicker('application/json');
       
       if (!files || files.length === 0) {
-        this.driveOperationMessage = '❌ No file selected';
-        setTimeout(() => this.driveOperationMessage = '', 3000);
+        this.setDriveMessage('No file selected');
+        setTimeout(() => this.setDriveMessage(''), 3000);
         return;
       }
 
-      this.driveOperationMessage = 'Downloading summaries...';
+      this.setDriveMessage('Downloading summaries...');
       const fileData = await this.driveService.downloadJsonFile(files[0].id);
       
       // Validate and load data
@@ -1053,15 +1072,15 @@ export class AppComponent implements OnInit {
         // Save to localStorage as well
         localStorage.setItem('grocery-summaries', JSON.stringify(this.grocerySummaries));
         
-        this.driveOperationMessage = `✅ Loaded ${fileData.length} summaries from Drive`;
-        setTimeout(() => this.driveOperationMessage = '', 5000);
+        this.setDriveMessage('Loaded {count} summaries from Drive', { count: fileData.length });
+        setTimeout(() => this.setDriveMessage(''), 5000);
       } else {
         throw new Error('Invalid summaries data format');
       }
     } catch (error) {
       console.error('❌ Error loading from Drive:', error);
-      this.driveOperationMessage = '❌ Failed to load from Drive. Please try again.';
-      setTimeout(() => this.driveOperationMessage = '', 5000);
+      this.setDriveMessage('Failed to load from Drive. Please try again.');
+      setTimeout(() => this.setDriveMessage(''), 5000);
     } finally {
       this.isLoadingDrive = false;
     }
@@ -1079,20 +1098,20 @@ export class AppComponent implements OnInit {
         const data = JSON.parse(e.target.result);
         if (Array.isArray(data)) {
           this.groceryData = data;
-          this.filteredData = [...this.groceryData];
-          this.updatePagination();
+          this.normalizeCategories();
+          this.onSearch();
           
           // Save to localStorage
           localStorage.setItem('grocery-data', JSON.stringify(this.groceryData));
           
-          alert(`✅ Successfully uploaded ${data.length} grocery items from ${file.name}`);
+          alert(this.t('Successfully uploaded {count} grocery items from {file}', { count: data.length, file: file.name }));
           console.log('✅ Grocery data uploaded:', data.length, 'items');
         } else {
           throw new Error('Invalid data format');
         }
       } catch (error) {
         console.error('❌ Error parsing grocery data file:', error);
-        alert('❌ Failed to upload file. Please ensure it is a valid JSON file.');
+        alert(this.t('Failed to upload file. Please ensure it is a valid JSON file.'));
       }
     };
     reader.readAsText(file);
@@ -1114,14 +1133,14 @@ export class AppComponent implements OnInit {
           // Save to localStorage
           localStorage.setItem('grocery-summaries', JSON.stringify(this.grocerySummaries));
           
-          alert(`✅ Successfully uploaded ${data.length} summaries from ${file.name}`);
+          alert(this.t('Successfully uploaded {count} summaries from {file}', { count: data.length, file: file.name }));
           console.log('✅ Summaries uploaded:', data.length, 'items');
         } else {
           throw new Error('Invalid data format');
         }
       } catch (error) {
         console.error('❌ Error parsing summaries file:', error);
-        alert('❌ Failed to upload file. Please ensure it is a valid JSON file.');
+        alert(this.t('Failed to upload file. Please ensure it is a valid JSON file.'));
       }
     };
     reader.readAsText(file);
@@ -1202,7 +1221,7 @@ export class AppComponent implements OnInit {
       <h3>Menu Options — English</h3>
       <ul>
         <li><strong>Add Item:</strong> Adds a blank row for category, product, brand, size/details, quantity, and CAD price.</li>
-        <li><strong>Language:</strong> Switches button labels, grocery category names, and this help guide between English and French, including the mobile menu, sorting, pagination, and dialog actions. The button shows the current language.</li>
+        <li><strong>Language:</strong> Switches the entire interface and this guide between English and French, including login, forms, messages, and statistics. Your selection is remembered in this browser. Product names, brands, store names, and your notes are not automatically translated.</li>
         <li><strong>Summary Report:</strong> Views saved reports and adds a report with date, store, actual cost, and optional reason. Estimated cost uses picked-up items.</li>
         <li><strong>Statistics:</strong> Charts estimated and actual costs from saved summaries.</li>
         <li><strong>Help:</strong> Opens this guide. <strong>About Solution:</strong> Shows app information.</li>
@@ -1223,7 +1242,7 @@ export class AppComponent implements OnInit {
       <h3>Options du menu — Français</h3>
       <ul>
         <li><strong>Ajouter un article :</strong> Ajoute une ligne pour la catégorie, le produit, la marque, le format ou les détails, la quantité et le prix en dollars canadiens.</li>
-        <li><strong>Langue :</strong> Change les libellés des boutons, les noms des catégories et ce guide d’aide entre l’anglais et le français, y compris le menu mobile, le tri, la pagination et les actions des fenêtres. Le bouton indique la langue actuelle.</li>
+        <li><strong>Langue :</strong> Change toute l’interface et ce guide entre l’anglais et le français, y compris la connexion, les formulaires, les messages et les statistiques. Votre choix est conservé dans ce navigateur. Les noms de produits, les marques, les magasins et vos notes ne sont pas traduits automatiquement.</li>
         <li><strong>Rapport sommaire :</strong> Affiche les rapports enregistrés et permet d’en ajouter un avec la date, le magasin, le coût réel et une raison facultative. Le coût estimé utilise les articles ramassés.</li>
         <li><strong>Statistiques :</strong> Présente un graphique des coûts estimés et réels des rapports enregistrés.</li>
         <li><strong>Aide :</strong> Ouvre ce guide. <strong>À propos :</strong> Affiche des renseignements sur l’application.</li>
@@ -1309,7 +1328,7 @@ export class AppComponent implements OnInit {
     header.style.alignItems = 'center';
     header.style.justifyContent = 'space-between';
     const h2 = document.createElement('h2');
-    h2.textContent = 'About Solution';
+    h2.textContent = this.t('About Solution');
     const closeBtn = document.createElement('button');
     closeBtn.textContent = this.buttonLabel('Close');
     closeBtn.addEventListener('click', () => this.closeAboutModal());
@@ -1317,12 +1336,9 @@ export class AppComponent implements OnInit {
     header.appendChild(closeBtn);
 
     const body = document.createElement('div');
-    body.innerHTML = `
-      <p>
-        Grocery Manager was developed by <strong>Daniel Seguin</strong> of <strong>SeguinDev</strong>
-        in January 2026.
-      </p>
-    `;
+    const description = document.createElement('p');
+    description.textContent = this.t('Grocery Manager was developed by Daniel Seguin of SeguinDev in January 2026.');
+    body.appendChild(description);
 
     content.appendChild(header);
     content.appendChild(body);
@@ -1351,13 +1367,13 @@ export class AppComponent implements OnInit {
 
   sendSupportEmail(): void {
     const to = 'daniel@seguin.dev';
-    const subject = encodeURIComponent('Grocery Manager Support');
+    const subject = encodeURIComponent(this.t('Grocery Manager Support'));
     const bodyLines = [
-      `Name: ${this.supportName}`,
-      `Phone: ${this.supportPhone}`,
-      `Email: ${this.supportEmail}`,
+      `${this.t('Name')}: ${this.supportName}`,
+      `${this.t('Phone')}: ${this.supportPhone}`,
+      `${this.t('Email')}: ${this.supportEmail}`,
       '',
-      'Message:',
+      `${this.t('Message')}:`,
       this.supportMessage || ''
     ];
     const body = encodeURIComponent(bodyLines.join('\n'));

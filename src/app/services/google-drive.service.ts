@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
+import { LanguageService } from './language.service';
 
 declare const gapi: any;
 declare const google: any;
@@ -19,7 +20,7 @@ export class GoogleDriveService {
   private accessToken: string | null = null;
   private tokenClient: any = null;
 
-  constructor() {
+  constructor(private language: LanguageService) {
     // Load Google API asynchronously, don't block construction
     this.loadGapi().catch(error => {
       console.warn('Google Drive service initialization failed:', error);
@@ -183,6 +184,7 @@ export class GoogleDriveService {
 
       return new Promise((resolve, reject) => {
         const picker = new google.picker.PickerBuilder()
+          .setLocale(this.language.currentLanguage)
           .addView(new google.picker.DocsView(google.picker.ViewId.FOLDERS)
             .setSelectFolderEnabled(true))
           .setOAuthToken(this.accessToken!)
@@ -227,6 +229,7 @@ export class GoogleDriveService {
           .setMimeTypes(mimeType);
 
         const picker = new google.picker.PickerBuilder()
+          .setLocale(this.language.currentLanguage)
           .addView(view)
           .setOAuthToken(this.accessToken!)
           .setDeveloperKey(environment.google.apiKey)
